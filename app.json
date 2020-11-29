@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "Beemall",
+    "slug": "Beemall",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.7",
+    "orientation": "portrait",
+    "icon": "./assets/512.png",
+    "splash": {
+      "image": "./assets/sp4.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF064"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.beemallshop.beemallshop",
+      "versionCode": 7,
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyCJec-8VQVXNjMORK8IIPUiztZ7k2HVEOA",
+          "certificateHash": "A614F475C3E370BC0D7B359BB118E1BC02999B5A"
+        },
+        "googleMaps":{
+          "apiKey":"AIzaSyD7arViUQWyZhROPL4HKcujDdNy_fi2XW4"
+        }
+      },
+        
+      "permissions": [
+        
+        "ACCESS_FINE_LOCATION"
+    
+      ]
+     
+    
+    },
+   
+    "androidNavigationBar": {
+  
+      
+     
+  
+    }
+    
+  }
+}
