@@ -10,7 +10,9 @@ import { getAdress } from '../../actions/adressAction'
 import { Header } from 'react-navigation-stack';
 /* toast */
 // import Toast from 'react-native-simple-toast';
-
+/*expo permissions */
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
 /* menu */
 
 import AdressMenu from "../../components/AdreesMenu/AdressMenu"
@@ -73,8 +75,14 @@ class Adress extends React.Component {
         }, 500)
 
     }
-    addAdress() {
-        this.props.navigation.navigate("AddAdress")
+    async addAdress() {
+        // let status = await Permissions.askAsync(Permissions.LOCATION)
+        // // let status = await Location.getPermissionsAsync()
+        // let location = await Location.getCurrentPositionAsync({})
+        // if(location){
+            this.props.navigation.navigate("AddAdress")
+        // }
+        
     }
 
     render() {

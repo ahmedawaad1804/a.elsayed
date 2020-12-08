@@ -7,14 +7,18 @@ import colors from '../../colors'
 import { Header } from 'react-navigation-stack';
 
 export default CategoryItem = (data) => {
-
+let open=true
   // console.log(data);
-
-
+  let d = new Date();
+   console.log(data.src.close);
+if(data.src.close<d.getHours() && data.src.open<d.getHours() ){
+  open=false
+}
   return (
     <View>
-      <TouchableOpacity style={styles.gridCell} onPress={data.click} >
+      <TouchableOpacity style={styles.gridCell} onPress={open?data.click:data.notclick} >
         <Image style={styles.imageThumbnail} source={{ uri: `http://www.beemallshop.com/img/CatIcons/${data.src.icon}` }} />
+        {!open &&<Image style={styles.imageError} source={require("../../assets/categories/close.png")} />}
           <Text style={styles.smallText}>{I18nManager.isRTL ? data.src.nameAR : data.src.nameEN}</Text>
         <View style={{ backgroundColor: '#ccc', height: Dimensions.get('window').height * 12 / 812 }}></View>
       </TouchableOpacity>
@@ -35,6 +39,18 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 95 * .75 / 812,
     resizeMode: "contain",
     marginTop: 5,
+    // backgroundColor:'red'
+    // , { width: 141 / 3, height: 118 / 3 }
+  },
+  imageError: {
+
+    width: Dimensions.get('window').width * 106 * .80 / 375,
+    height: Dimensions.get('window').height * 95 * .75 / 812,
+    resizeMode: "contain",
+    marginTop: 5,
+    position:'absolute',
+    opacity:0.8
+    
     // backgroundColor:'red'
     // , { width: 141 / 3, height: 118 / 3 }
   },

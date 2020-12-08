@@ -58,7 +58,7 @@ class Payment extends React.Component {
         if (this.state.value3Index == 0) {
             let tempProductsArr = []
             this.state.data.products.forEach(element => {
-                tempProductsArr.push({ count: element.count, productId: element.item._id,product: element.item })
+                tempProductsArr.push({ count: element.count, productId: element.item._id,product: element.item,prodNontes:element.prodNontes })
             })
            await orderService.placeOrder({
                 products: tempProductsArr,

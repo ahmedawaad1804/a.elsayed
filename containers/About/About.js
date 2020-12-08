@@ -83,11 +83,11 @@ export default class About extends React.Component {
             <Text style={styles.headerText}>{ I18nManager.isRTL ?"تابعنا" : 'Follow us'   }</Text>
             
             <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',width:"100%",marginTop:20}}>
-              <TouchableOpacity onPress={()=>{Linking.openURL('https://twitter.com/Beemall8');}}>
+              <TouchableOpacity onPress={()=>{Linking.openURL('https://twitter.com/beemallegypt?s=11');}}>
             <Image source={require("../../assets/icons/tw.png")}
             style={styles.iconStyle} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{Linking.openURL('fb://page/Beemallshopping');}}>
+            <TouchableOpacity onPress={()=>{Linking.openURL('fb://page/109946370745674');}}>
             <Image source={require("../../assets/icons/fb.png")}
             style={styles.iconStyle} />
             </TouchableOpacity>

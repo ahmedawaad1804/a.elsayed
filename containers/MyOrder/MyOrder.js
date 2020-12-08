@@ -31,11 +31,13 @@ class MyOrder extends React.Component {
         visible: false,
         errorMessage: " ",
         _error: false,
-        products: []
+        products: [],
+        minutes:15,
+        hours:1
     };
 
     componentDidMount() {
-        console.log(this.props.navigation.state.params);
+        // console.log(this.props.navigation.state.params);
 
         
         for (const prod of this.props.navigation.state.params.id.products) {
@@ -47,6 +49,11 @@ class MyOrder extends React.Component {
 
         this.setState({ order: this.props.navigation.state.params.id, products: this.props.navigation.state.params.id.products })
         // console.log(this.props.navigation.state.params.id.products );
+        // console.log(this.state.order.timeForDilvery);
+        if(this.state.order.timeForDilvery){
+        this.setState({
+            hours:parseInt(this.state.order.timeForDilvery/60) ,minutes:this.state.order.timeForDilvery%60
+        })}
     }
     cancel() {
         this.props.navigation.navigate("CancelOrder", { orderID: this.state.order._id })
@@ -106,7 +113,7 @@ class MyOrder extends React.Component {
                             <Text style={styles.descText}>{I18nManager.isRTL ? "السعر" : "Price"} :   { Number.parseFloat(this.state.order.totalOrder).toFixed(2)}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "التاريخ" : "Date"} :   {this.state.order.Date}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "الحالة" : "Status"} :   {this.state.order.status}</Text>
-                            <Text style={styles.descText}>{I18nManager.isRTL ? "وقت التوصيل" : "Time for delivery"} :   {this.state.order.timeForDilvery}   {I18nManager.isRTL ? "دقيقة" : "minutes"} </Text>
+                            <Text style={styles.descText}>{I18nManager.isRTL ? "وقت التوصيل" : "Time for delivery"} :   {this.state.hours}   {I18nManager.isRTL ? "ساعة" : "hours"} {this.state.minutes}   {I18nManager.isRTL ? "دقيقة" : "minutes"}</Text>
                             {this.props.navigation.state.params.id.promo &&<Text style={styles.descText}>{I18nManager.isRTL ? "كود الخصم" : "Promo Code"} :   {this.props.navigation.state.params.id.promo.promoName}</Text>}
                             {this.props.navigation.state.params.id.promo &&<Text style={styles.descTextPrice}>{I18nManager.isRTL ? "قيمة الخصم" : "Promo Discount"} :   {this.props.navigation.state.params.id.promo.discount}</Text>}
                         </View>

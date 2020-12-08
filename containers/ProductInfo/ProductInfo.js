@@ -45,7 +45,8 @@ class ProductInfo extends React.Component {
         subcat:" ",
         mainCategoryObj:{},
         prodNontes: " ",
-        extraLength:false
+        extraLength:false,
+        isClothes:false
 
     };
 
@@ -59,6 +60,11 @@ class ProductInfo extends React.Component {
     componentDidMount() {
         this.props.navigation.state.params.item.extraArray=[]
         
+        for (const ext of this.props.navigation.state.params.item.extras) {
+            if(ext.ExtraPrice==0){
+                this.setState({isClothes:true})
+            }
+        }
         this.setState({initialItem:this.props.navigation.state.params.item})
        
         this.props.navigation.state.params.item.extras.forEach(element => {
@@ -433,7 +439,7 @@ this.setState({bottomBool:bool})
                         <View style={styles.productDetailsTitle}>
                              {  this.props.navigation.state.params.item.extras.length!=0&&<TouchableOpacity style={{flex:1, justifyContent:'center',alignItems:'center'}} onPress={()=>{this.toggleBottom(false)}}>
                                
-                        <Text style={{padding:5,paddingHorizontal:15,borderRadius:30,backgroundColor:colors.primary, fontFamily: "Cairo-Bold", fontSize: 16, textAlign: I18nManager.isRTL ? 'left' : null }}>{I18nManager.isRTL ? "اضافات" : "Extras"}</Text>
+                        <Text style={{padding:5,paddingHorizontal:15,borderRadius:30,backgroundColor:colors.primary, fontFamily: "Cairo-Bold", fontSize: 16, textAlign: I18nManager.isRTL ? 'left' : null }}>{I18nManager.isRTL ? this.state.isClothes?"المقاسات":"اضافات" : this.state.isClothes?"Sizes":"Extras"}</Text>
                         </TouchableOpacity>}
                         <TouchableOpacity style={{flex:1, justifyContent:'center',alignItems:'center'}} onPress={()=>{this.toggleBottom(true)}}>
                             <Text style={{padding:5,paddingHorizontal:15, borderRadius:30, backgroundColor:colors.primary, fontFamily: "Cairo-Bold", fontSize: 16, textAlign: I18nManager.isRTL ? 'left' : null }}>{I18nManager.isRTL ? "تفاصيل المنتج" : "Product Details"}</Text>
@@ -714,7 +720,7 @@ const styles = StyleSheet.create({
     },
     discount: {
         fontFamily: 'Cairo-Regular',
-        fontSize: 15,
+        fontSize: 12,
         textDecorationLine: 'line-through',
         textDecorationStyle: "solid",
         textDecorationColor: "red",

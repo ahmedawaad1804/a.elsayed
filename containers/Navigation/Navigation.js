@@ -37,6 +37,7 @@ import CancelOrder from "../CancelOrder/CancelOrder"
 import advertising from '../advertising/advertising'
 import Inst from '../Inst/Inst'
 import ProductInfoCart from '../ProductInfoCart/ProductInfoCart'
+import AddAdressMap from '../AddAdressMap/AddAdressMap'
 
 /* trans */
 import i18n from 'i18n-js';
@@ -136,7 +137,8 @@ const MainStack = createStackNavigator({
     CancelOrder,
     advertising,
     Inst,
-    ProductInfoCart
+    ProductInfoCart,
+    AddAdressMap
 
 
 })

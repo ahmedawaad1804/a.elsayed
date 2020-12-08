@@ -45,12 +45,16 @@ export default class MainCategoryItem extends React.Component {
                     {/* <Text style={{ fontFamily: 'Cairo-Regular', fontSize: 12 }}>Adress</Text> */}
                     <Text style={{ fontFamily: 'Cairo-Regular', fontSize: 12 }}>{this.props.item.street} {this.props.item.route},{this.props.item.neighbourhood}, {this.props.item.administrative_area}, {this.props.item.city}</Text>
                 </View>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: "100%", width: 30 }}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: "100%", width: 30}}>
                     <Menu
                         style={{ borderRadius: 20 }}
                         ref={this.setMenuRef}
 
-                        button={<TouchableOpacity onPress={this.showMenu}><Image source={require("../../assets/icons/dots.png")}
+                        button={<TouchableOpacity onPress={this.showMenu} style={{
+                        height:'100%',
+                        alignItems:'center',
+                        justifyContent:'center'
+                    }}><Image source={require("../../assets/icons/dots.png")}
                             style={styles.Icon} /></TouchableOpacity>}
                     >
                         <MenuItem disabled={this.props.item.current} onPress={()=>{this.hideMenu(),this.makeCurrent()}}> <Image source={require("../../assets/icons/marker2.png")}

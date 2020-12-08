@@ -31,6 +31,7 @@ class Cart extends React.Component {
         visible: false,
         errorMessage: " ",
         _error: false,
+        _isLogIn: false,
     };
 
     componentDidMount() {
@@ -40,7 +41,9 @@ class Cart extends React.Component {
         
         this.setState({ data: this.props.cartReducer }, () => { this.calculate(); console.log(this.state.data);
          })
-
+         if (this.props.loginReducer) {
+            this.setState({ _isLogIn: true })
+        }
 
     }
 
@@ -144,6 +147,12 @@ class Cart extends React.Component {
          
         
     }
+    _handleLogin = () => {
+        this.props.navigation.navigate("Login")
+    }
+    _handleRegister = () => {
+        this.props.navigation.navigate("Register")
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -181,8 +190,8 @@ class Cart extends React.Component {
 
                 </View>
 
-                <View style={styles.mainContainer}>
-                    <View style={{ alignItems: "center", flex: 1 }}>
+                {this.state._isLogIn &&  <View style={styles.mainContainer}>
+                 <View style={{ alignItems: "center", flex: 1 }}>
                         <Text style={styles.errorText}>{this.state.errorMessage}</Text>
 
                         <FlatList
@@ -260,8 +269,7 @@ class Cart extends React.Component {
 
 
                     </View>
-
-                    <View style={styles.bottomMainView}>
+                      <View style={styles.bottomMainView}>
                         <View style={{ flex: 3, flexDirection: 'row' }}>
                             <View style={{ flex: 2, justifyContent: 'center', alignItems:'center', paddingRight: 5 }}>
                                 <Text style={{ fontSize: 16, fontFamily: "Cairo-Bold",color:colors.gold  }}>{I18nManager.isRTL?"تكلفة المنتجات":"Products cost"} </Text>
@@ -294,11 +302,36 @@ class Cart extends React.Component {
                             </View>
                         </View>
                     </View>
+                    
 
 
+                </View>}
+                {
+                    !this.state._isLogIn && <View style={[styles.mainContainer, { justifyContent: 'center',alignItems:'center' }]}>
+                        <View style={{ alignItems: 'flex-start', width: "100%" }}>
+                            <Text style={styles.headerText}>{I18nManager.isRTL ? "انت لست مسجل دخول" : "You arn't logged in"}</Text>
+                            <Text style={styles.instructionText}>{I18nManager.isRTL ? "قم بتسجيل الدخول" : "Please log in"}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.tOpacity}
+                            // disabled={this.state._ckeckSignIn}
+                            onPress={() => this._handleLogin()}>
+                            <Text style={styles.text}>{I18nManager.isRTL ? "تسجيل الدخول" : "Login"}</Text>
 
-                </View>
 
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.tOpacity}
+                            // disabled={this.state._ckeckSignIn}
+                            onPress={() => this._handleRegister()}>
+                            <Text style={styles.text}>{I18nManager.isRTL ?  "تسجيل" : "Register"}</Text>
+
+
+                        </TouchableOpacity>
+
+
+                    </View>
+
+                }
 
             </View >
 
@@ -371,6 +404,7 @@ const styles = StyleSheet.create({
     bottomMainView: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height * 180 / 812,
+
     },
     orderOpacity: {
         width: Dimensions.get('window').width * 360 / 375,
@@ -396,7 +430,7 @@ const styles = StyleSheet.create({
     }
 });
 const mapStateToProps = state => ({
-
+    loginReducer: state.loginReducer,
     cartReducer: state.cartReducer
 })
 const mapDispatchToProps = {

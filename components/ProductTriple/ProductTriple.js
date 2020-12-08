@@ -43,13 +43,14 @@ export default ProductTriple = (data) => {
                 <Text style={styles.productNameFont}>{I18nManager.isRTL ?stringAR: stringEN} </Text>
                 {/* <Text style={styles.descriptionFont}>{I18nManager.isRTL?data.src.descriptionAR:data.src.descriptionEN}</Text> */}
                 <View style={{flex:1,justifyContent:'flex-end'}}>
-                    <View style={{ flexDirection: 'row', }}>
+                    <View style={{  }}>
+                    {(!(data.src.discount === 0)) && <View style={{ alignItems: "flex-end", justifyContent: 'center' }}>
+                            <Text style={styles.discount}>{data.src.price}</Text>
+                        </View>}
                         <View>
                             <Text style={styles.price}>{data.src.discountPrice} {I18nManager.isRTL ? "ج.م" : "EGP"}</Text>
                         </View>
-                        {(!(data.src.discount === 0)) && <View style={{ alignItems: "flex-end", flex: 1, justifyContent: 'center' }}>
-                            <Text style={styles.discount}>{data.src.price}</Text>
-                        </View>}
+                        
                     </View>
                 </View>
             </View>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     },
     discount: {
         fontFamily: 'Cairo-Regular',
-        fontSize: 15,
+        fontSize: 12,
         textDecorationLine: 'line-through',
         textDecorationStyle: "solid",
         textDecorationColor: "red"

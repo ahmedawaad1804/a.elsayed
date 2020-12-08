@@ -44,7 +44,7 @@ class MainCategory extends React.Component {
 
 
         ],
-
+        nowHour:0
     };
 
 
@@ -81,7 +81,7 @@ class MainCategory extends React.Component {
 
         });
         // console.log(this.props.navigation.state.params.props.item.nameEN);
-        console.log(this.props.navigation.state.params.props.item.promoImgs);
+        // console.log(this.props.navigation.state.params.props.item.promoImgs);
         dataService.newestArrival(this.props.navigation.state.params.props.item._id).then(res => {
             this.setState({ bestSellerProducts: res.data }, (() => { this.setState({ isDataLoaded: true }) }))
             // console.log(res.data);
@@ -90,6 +90,10 @@ class MainCategory extends React.Component {
         })
         // this.setState({ bestSellerProducts: this.props.bestsellerReducer }, (() => { this.setState({ isDataLoaded: true }) }))
         this.setState({ categoryArr: this.props.navigation.state.params.props.item.Catygory }, (() => { this.setState({ isDataLoaded: true }) }))
+        let d = new Date();
+   
+  this.setState({nowHour:d.getHours()})
+//   console.log(this.props.navigation.state.params.props.item.Catygory);
         this.setState({dataAdv:this.props.navigation.state.params.props.item.promoImgs})
         // console.log(this.props.navigation.state.params.props.item._id);
     }
