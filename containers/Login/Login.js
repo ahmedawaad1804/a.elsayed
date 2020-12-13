@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { StyleSheet, Text, View, Platform, Animated, Alert, UIManager, I18nManager, Keyboard, Switch, CheckBox, ActivityIndicator, TouchableWithoutFeedback, Button, Input, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, KeyboardAvoidingView, ImageBackground } from 'react-native';
 import store from '../../store'
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { connect } from 'react-redux'
 /* localization */
 import { Restart } from 'fiction-expo-restart';
@@ -517,7 +518,8 @@ class Login extends React.Component {
 
                 <FontAwesome name="facebook-f" size={20} color="white" />
               </TouchableOpacity>
-              <TouchableOpacity
+
+              {true?<TouchableOpacity
                 style={{
                   backgroundColor: "#de5246",
                   alignItems: "center",
@@ -534,7 +536,37 @@ class Login extends React.Component {
               >
 
                 <FontAwesome name="google" size={20} color="white" />
-              </TouchableOpacity>
+              </TouchableOpacity>:
+                <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={5}
+                style={{ width: Dimensions.get('window').width * 160 / 375,
+                height: Dimensions.get('window').height * 46 / 812, 
+                alignItems: "center",
+                  justifyContent: "center",
+                borderWidth: 1,
+                borderRadius: 50,
+                marginHorizontal: 5
+              }}
+                onPress={async () => {
+                  try {
+                    const credential = await AppleAuthentication.signInAsync({
+                      requestedScopes: [
+                        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                      ],
+                    });
+                    // signed in
+                  } catch (e) {
+                    if (e.code === 'ERR_CANCELED') {
+                      // handle that the user canceled the sign-in flow
+                    } else {
+                      // handle other errors
+                    }
+                  }
+                }}
+              />}
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', }}>
 

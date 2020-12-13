@@ -59,7 +59,7 @@ export default OrderItem = (data) => {
 
                 </View>
                 <View style={styles.variableText}>
-                    <Text style={{ fontSize: 14, fontFamily: "Cairo-Regular", flex: 1 }}>{data.src._id}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: "Cairo-Regular", flex: 1 }}>{data.src.orderTimeID}</Text>
 
                     <Text style={{ fontSize: 14, fontFamily: "Cairo-Regular", flex: 1 }}>{data.src.Date}</Text>
                     <Text style={{ fontSize: 14, fontFamily: "Cairo-Regular", flex: 1 }}><Text style={{ fontSize: 14, fontFamily: "Cairo-Bold" }}>{data.src.totalOrder}</Text> {I18nManager.isRTL ? "ج.م" : "EGP"} </Text>

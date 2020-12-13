@@ -22,7 +22,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "using location to detect once address of client for delivery purpose "
+      },
+      "bundleIdentifier": "com.beemallshop.beemallshop",
+      "buildNumber": "1.0.7"
     },
     "android": {
       "package": "com.beemallshop.beemallshop",

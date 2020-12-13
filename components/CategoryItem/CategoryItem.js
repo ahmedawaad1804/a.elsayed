@@ -10,10 +10,19 @@ export default CategoryItem = (data) => {
 let open=true
   // console.log(data);
   let d = new Date();
-   console.log(data.src.close);
-if(data.src.close<d.getHours() && data.src.open<d.getHours() ){
-  open=false
+  let hours=d.getHours()
+  let openHours=[]
+  // console.log(hours);
+  //  console.log(data.src.close);
+  //  console.log(data.src.open);
+if(data.src.close>=0&&data.src.close<12 || data.src.close==24){
+
+            openHours.push()
 }
+
+// if(data.src.close<d.getHours() && data.src.open<d.getHours() ){
+//   open=false
+// }
   return (
     <View>
       <TouchableOpacity style={styles.gridCell} onPress={open?data.click:data.notclick} >

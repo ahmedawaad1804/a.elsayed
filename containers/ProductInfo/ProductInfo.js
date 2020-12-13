@@ -89,10 +89,7 @@ class ProductInfo extends React.Component {
 
         });
         this.setState({ pics: this.props.navigation.state.params.item.images })
-        // console.log(this.props.navigation.state.params.item.images);
-        // console.log(this.props.navigation.state.params.item.images);
-        // console.log(Platform.OS);
-        // console.log(this.state.initialItem);
+        
 
     }
     navigateMainCategory(title, props) {
@@ -162,28 +159,15 @@ class ProductInfo extends React.Component {
         // let itemCopy=this.state.currentItem
    
         
-        // this.setState({extraArray:temp},()=>{itemCopy.extraArray=temp
-        // itemCopy.extras.forEach(element => {
-        //     element.checked=false
-        // });
-        // // console.log(itemCopy);
-
-        //     this.setState({
-        //         currentItem:itemCopy 
-        //       }) 
-        //     })
-        //     this.setState({count:0})
+        
 
     }
     toggleExtras(item,index){
-    //    this.setState({currentItem:asd})
-    // console.log("any");
+    
         let temp=[]
         temp=[...this.state.extraArray]
-        // this.props.navigation.state.params.item.extras[index].checked=!this.props.navigation.state.params.item.extras[index].checked
         let recipe = JSON.parse(JSON.stringify(this.state.currentItem))
-        // console.log(this.state.currentItem);
-        // console.log(recipe.extras[index].checked);
+     
 
             recipe.extras[index].checked=!recipe.extras[index].checked
             // console.log(recipe.extras[index].checked);

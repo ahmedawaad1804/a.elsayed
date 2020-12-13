@@ -45,7 +45,6 @@ export default class About extends React.Component {
   componentDidMount() {
 
     dataService.getBrief().then(res => {
-      // console.log(res.data.result[0]);
       if(res.data.result[0]){
       this.setState({ data: res.data.result[0] })}
     }).catch(err => {

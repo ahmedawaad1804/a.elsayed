@@ -109,7 +109,7 @@ class MyOrder extends React.Component {
                     <View style={{ alignItems: "center", flex: 1 }}>
                         <Text style={styles.errorText}>{this.state.errorMessage}</Text>
                         <View style={{ justifyContent: 'flex-start', width: Dimensions.get('window').width - 20,marginBottom:20 }}>
-                            <Text style={styles.descText}>{I18nManager.isRTL ? "رقم الاوردر" : "Order Id"} :   {this.state.order._id}</Text>
+                            <Text style={styles.descText}>{I18nManager.isRTL ? "رقم الاوردر" : "Order Id"} :   {this.state.order.orderTimeID}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "السعر" : "Price"} :   { Number.parseFloat(this.state.order.totalOrder).toFixed(2)}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "التاريخ" : "Date"} :   {this.state.order.Date}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "الحالة" : "Status"} :   {this.state.order.status}</Text>
@@ -134,9 +134,9 @@ class MyOrder extends React.Component {
                                     </View>
                                     <View style={{ flex: 4, justifyContent: 'center' }}>
                                         <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold", textAlign: (I18nManager.isRTL && Platform.OS === 'ios') ? 'left' : null, }}>{I18nManager.isRTL ? item.productId.productNameAR : item.productId.productNameEN}</Text>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold" }}> {I18nManager.isRTL ? "السعر" : "Price"}  {Number.parseFloat(item.PurchasingPrice).toFixed(2)} {I18nManager.isRTL ? "ج.م" : "EGP"}</Text>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold" }}> {I18nManager.isRTL ? "العدد" : "Count"}  {item.count} </Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}>{I18nManager.isRTL ? item.productId.productNameAR : item.productId.productNameEN}</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}> {I18nManager.isRTL ? "السعر" : "Price"}  {Number.parseFloat(item.PurchasingPrice).toFixed(2)} {I18nManager.isRTL ? "ج.م" : "EGP"}</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}> {I18nManager.isRTL ? "العدد" : "Count"}  {item.count} </Text>
                                         </View>
                                     </View>
 
@@ -259,7 +259,8 @@ const styles = StyleSheet.create({
     },
     descText: {
         fontFamily: 'Cairo-Regular',
-        fontSize: 14
+        fontSize: 14,
+        alignSelf:'flex-start'
     },
     descTextPrice: {
         fontFamily: 'Cairo-Regular',
