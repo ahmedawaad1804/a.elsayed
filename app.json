@@ -2,6 +2,9 @@
   "expo": {
     "name": "Beemall",
     "slug": "Beemall",
+    "facebookScheme": "fb3070973469686409",
+    "facebookAppId": "3070973469686409",
+    "FacebookDisplayName": "BeeMall",
     "platforms": [
       "ios",
       "android",
@@ -24,10 +27,8 @@
     "ios": {
       "supportsTablet": false,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "using location to detect once address of client for delivery purpose ",
-        "facebookScheme": "fb3070973469686409",
-        "facebookAppId": "3070973469686409",
-        "FacebookDisplayName": "BeeMall"
+        "NSLocationWhenInUseUsageDescription": "using location to detect once address of client for delivery purpose "
+     
       },
       "bundleIdentifier": "com.beemallshop.beemallshop",
       "buildNumber": "1.0.12"

@@ -551,7 +551,7 @@ class Login extends React.Component {
 
                 <FontAwesome name="google" size={20} color="white" />
               </TouchableOpacity>}
-              {(Platform.OS === 'ios') && <AppleAuthentication.AppleAuthenticationButton
+              {/* {(Platform.OS === 'ios') && <AppleAuthentication.AppleAuthenticationButton
                 buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
                 buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
                 cornerRadius={50}
@@ -574,7 +574,7 @@ class Login extends React.Component {
                     }
                   }
                 }}
-              />}
+              />} */}
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', }}>
 
