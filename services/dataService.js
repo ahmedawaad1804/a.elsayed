@@ -69,6 +69,10 @@ export default dataService = {
         return axiosInstance
             .post('/newArrival/getNew',{id});
     },
+    getConfig: () => {
+        return axiosInstance
+            .get('/order/getConfig');
+    },
 
 
 

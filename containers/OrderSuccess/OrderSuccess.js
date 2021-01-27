@@ -25,7 +25,6 @@ class OrderSuccess extends React.Component {
 
     static navigationOptions = { header: null }
     componentDidMount() {
-        console.log(this.props.adressReducer);
         this.setState({ data: this.props.adressReducer})
         // console.log(this.props.userReducer.address);
         this.unsubscribe = store.subscribe(() => {

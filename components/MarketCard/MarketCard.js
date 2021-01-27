@@ -8,7 +8,6 @@ import { Header } from 'react-navigation-stack';
 
 export default MarketCard = (data) => {
 
-    console.log(data);
 
     return (
        <View style={styles.container}>

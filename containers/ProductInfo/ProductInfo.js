@@ -25,10 +25,9 @@ class ProductInfo extends React.Component {
         { label: 'Call Us',    image: require('../../assets/icons/telephone.png') },
         { label: 'WhatsApp',    image: require('../../assets/icons/whatsapp.png') },
         { label: 'Facebook',    image: require('../../assets/icons/messenger.png') },
-        // { label: this.state.mainCategory,    image: require('../../assets/icons/messenger.png') },
       ];
     state = {
-        count: 0,
+        count: 1,
         counter: this.props.cartReducer.length,
         itemNumber: 0,
         data: [
@@ -53,6 +52,8 @@ class ProductInfo extends React.Component {
 
     static navigationOptions = { header: null }
     componentWillMount(){
+        console.log(this.props.navigation.state.params.item.productNameEN==="Mashweer Extra ");
+
         if(!this.props.navigation.state.params.item.extras){
             this.props.navigation.state.params.item.extras=[]
         }
@@ -81,11 +82,12 @@ class ProductInfo extends React.Component {
         this.setState({currentItem:this.props.navigation.state.params.item})
         //  && 
         
-        // console.log(this.props.navigation.state.params.item.extras);
 
         this.unsubscribe = store.subscribe(() => {
+            setTimeout(() => {
             this.setState({ counter: store.getState().cartReducer.length })
-            // console.log(store.getState());
+                
+            }, 400);
 
         });
         this.setState({ pics: this.props.navigation.state.params.item.images })
@@ -130,7 +132,6 @@ class ProductInfo extends React.Component {
             }
             
         }
-        // console.log(this.props.navigation.state.params.item);
     }
     increase = () => {
         this.setState({ count: ++this.state.count })
@@ -141,8 +142,7 @@ class ProductInfo extends React.Component {
         }
     }
     submitItem = () => {
-        // console.log("----------------product info submit-------------");
-        // console.log(this.state.currentItem);
+        
         
         if (this.state.count > 0) {
             // Toast.show(`${this.props.navigation.state.params.item.productNameEN} added to cart`);
@@ -456,7 +456,11 @@ this.setState({bottomBool:bool})
                                         <View style={styles.textInputView}>
                                         <TextInput
                                             style={styles.textInputStyleM}
-                                            placeholder={I18nManager.isRTL ? "ملاحظات" : "Notes"}
+                                            placeholder={
+                                                this.props.navigation.state.params.item.productNameEN==="Mashweer Extra "||this.props.navigation.state.params.item.productNameEN==="Mashweer"?
+                                                I18nManager.isRTL ? " اكتب تفاصيل عن المشوار " : "Write Deatils about the trip service"
+                                                :I18nManager.isRTL ? "ملاحظات" : "Notes"
+                                            }
                                             value={this.state.phonenumber}
                                             placeholderTextColor={'#ccc'}
                                             width={Dimensions.get('window').width * 3 / 5}
@@ -500,7 +504,11 @@ this.setState({bottomBool:bool})
                     <TouchableOpacity style={styles.addToCart}
                         onPress={this.submitItem}
                     >
-                        <Text style={{ fontFamily: "Cairo-Bold", fontSize: 16, }}>  {I18nManager.isRTL ? "إضافة الي السلة" : "Add To Cart"}  </Text>
+                        <Text style={{ fontFamily: "Cairo-Bold", fontSize: 16, }}>  {
+                            this.props.navigation.state.params.item.productNameEN==="Mashweer Extra "||this.props.navigation.state.params.item.productNameEN==="Mashweer"?
+                        I18nManager.isRTL ? "طلب الخدمة" : "Order the service"
+                        :I18nManager.isRTL ? "إضافة الي السلة" : "Add To Cart"
+                        }  </Text>
                         <Image source={require("../../assets/icons/cartIn.png")}
                             style={styles.cartIcon} />
                     </TouchableOpacity>

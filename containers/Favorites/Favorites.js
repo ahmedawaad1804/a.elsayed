@@ -32,10 +32,11 @@ class Favorites extends React.Component {
     };
 
     componentDidMount() {
-        store.subscribe(() => {
-            this.setState({ counter: this.props.cartReducer.length })
-            // console.log("subscribed");
+        this.unsubscribe = store.subscribe(() => {
+            setTimeout(() => {
+                this.setState({ counter: this.props.cartReducer.length })
 
+            }, 400);
 
         });
         likeService.getLikes().then(res => {
@@ -47,43 +48,28 @@ class Favorites extends React.Component {
             temp = [...res.data.likes]
             console.log("/////////////");
             for (let index = 0; index < temp.length; index++) {
-                let flag=true
+                let flag = true
                 for (let indexInternal = 0; indexInternal < arr.length; indexInternal++) {
                     console.log(temp[index].mainCategory._id);
                     console.log(arr[indexInternal]._id);
-                    if(temp[index].mainCategory._id==arr[indexInternal]._id){
-                        flag=false
+                    if (temp[index].mainCategory._id == arr[indexInternal]._id) {
+                        flag = false
                     }
                 }
                 console.log("cc");
 
-                if(!flag){continue}
+                if (!flag) { continue }
                 arr.push(temp[index].mainCategory)
                 console.log("dd");
-                
+
             }
-//             temp.forEach(
-//                 element => {
-//                     console.log(temp.indexOf(element.mainCategory));
-// // console.log(element.mainCategory);
-                    
-//                     if (arr.map((obj) => {return !(obj._id === element.mainCategory._id) }).reverse()[0] ) {
-//                         arr.push(element.mainCategory)
-//                     }
 
-//                     // console.log(arr);
-
-//                 }
-//             )
             arr.unshift({ nameEN: "All", _id: -1, nameAR: 'الكل' })
-            // console.log(arr);
-            ////
+
 
 
             this.setState({ category: arr })
-            // console.log(category);
         }).catch(err => { console.log(err); })
-        // this.setState({ itemData: this.props.bestsellerReducer })
 
         this.setState({ _isDataLoaded: true })
         if (this.props.loginReducer) {
@@ -92,7 +78,9 @@ class Favorites extends React.Component {
         if (this.props.userReducer) {
             this.setState({ user: this.props.userReducer })
         }
-
+        setInterval(() => {
+            this.refreshList()
+        }, 10000);
     }
 
 
@@ -117,62 +105,63 @@ class Favorites extends React.Component {
         // item == 0 ? this.setState({ loop: this.state.orders }) : this.setState({ loop: this.state.ordersHistory })
 
     }
-    onRefresh = () => {
-        console.log("onRefresh");
-        this.setState({ refreshing: true })
-        // this.props.refreshOrders()
-        likeService.getLikes().then(res => {
-            console.log(res.data.likes);
-            this.setState({ itemData: res.data.likes })
-            this.setState({ data: res.data.likes })
-            ////
-            let temp, arr = []
-            temp = [...res.data.likes]
-            for (let index = 0; index < temp.length; index++) {
-                let flag=true
-                for (let indexInternal = 0; indexInternal < arr.length; indexInternal++) {
-                    console.log(temp[index].mainCategory._id);
-                    console.log(arr[indexInternal]._id);
-                    if(temp[index].mainCategory._id==arr[indexInternal]._id){
-                        flag=false
+    refreshList(){
+        // console.log(this.state._isPressed);
+        if(this.state._isPressed==-1){
+            likeService.getLikes().then(res => {
+                // console.log(res.data.likes);
+                this.setState({ itemData: res.data.likes })
+                this.setState({ data: res.data.likes })
+                ////
+                let temp, arr = []
+                temp = [...res.data.likes]
+                for (let index = 0; index < temp.length; index++) {
+                    let flag = true
+                    for (let indexInternal = 0; indexInternal < arr.length; indexInternal++) {
+                        // console.log(temp[index].mainCategory._id);
+                        // console.log(arr[indexInternal]._id);
+                        if (temp[index].mainCategory._id == arr[indexInternal]._id) {
+                            flag = false
+                        }
                     }
+    
+                    if (!flag) { continue }
+                    arr.push(temp[index].mainCategory)
+    
                 }
-                console.log("cc");
-
-                if(!flag){continue}
-                arr.push(temp[index].mainCategory)
-                console.log("dd");
+                arr.unshift({ nameEN: "All", _id: -1, nameAR: 'الكل' })
+                // console.log(arr);
+                //
+    
                 
-            }
-            arr.unshift({ nameEN: "All", _id: -1, nameAR: 'الكل' })
-            console.log(arr);
-            ////
-
-
-            this.setState({ category: arr })
-            // console.log(category);
-            this.setState({ refreshing: false })
-
-        }).catch(err => {
-            console.log(err);
-            this.setState({ refreshing: false })
-        })
-
+                this.setState({ category: arr })
+                // console.log(category);
+                // this.setState({ refreshing: false })
+    
+            }).catch(err => {
+                console.log(err);
+                // this.setState({ refreshing: false })
+            })
+        }
 
     }
+   
     _handleLogin = () => {
         this.props.navigation.navigate("Login")
     }
     _handleRegister = () => {
         this.props.navigation.navigate("Register")
     }
-    handleCartAddOne(){
+    handleCartAddOne() {
 
     }
-    handleLike(){
-        
-    }
+    handleLike() {
 
+    }
+    componentWillUnmount() {
+
+        this.unsubscribe();
+    }
 
     render() {
         return (
@@ -192,7 +181,7 @@ class Favorites extends React.Component {
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         {this.state._isLogIn && <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 30, width: "70%" }}
-                        onPress={() => { this.props.navigation.navigate("Cart") }}>
+                            onPress={() => { this.props.navigation.navigate("Cart") }}>
                             <Image source={require("../../assets/icons/cart.png")}
                                 style={styles.cartImageStyle} />
                             {this.state.counter > 0 ? (<Badge
@@ -264,12 +253,12 @@ class Favorites extends React.Component {
                                         />
 
                                     )}
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this.onRefresh}
-                                        />
-                                    }
+                                    // refreshControl={
+                                    //     <RefreshControl
+                                    //         refreshing={this.state.refreshing}
+                                    //         onRefresh={this.onRefresh}
+                                    //     />
+                                    // }
                                     // style={{ width: '100%' }}
                                     keyExtractor={(item, index) => index}
                                     horizontal={false}
@@ -302,7 +291,7 @@ class Favorites extends React.Component {
                     <TouchableOpacity style={styles.tOpacity}
                         // disabled={this.state._ckeckSignIn}
                         onPress={() => this._handleRegister()}>
-                        <Text style={styles.text}>{I18nManager.isRTL ?  "تسجيل" : "Register"}</Text>
+                        <Text style={styles.text}>{I18nManager.isRTL ? "تسجيل" : "Register"}</Text>
 
 
                     </TouchableOpacity>

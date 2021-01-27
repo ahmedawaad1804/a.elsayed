@@ -46,7 +46,6 @@ export default class CancelOrder extends React.Component {
 
   }
   componentDidMount() {
-        console.log(this.props.navigation.state.params.orderID);
 
     
   }

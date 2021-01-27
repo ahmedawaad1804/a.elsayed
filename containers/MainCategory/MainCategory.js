@@ -44,7 +44,9 @@ class MainCategory extends React.Component {
 
 
         ],
-        nowHour:0
+        subcategory: [],
+
+        nowHour: 0
     };
 
 
@@ -54,30 +56,29 @@ class MainCategory extends React.Component {
 
     }
     handleCartAddOne(item) {
-        item.extraArray=[]
+        item.extraArray = []
         this.props.setCart({
-            item: item, count: 1,extraArr:[] 
+            item: item, count: 1, extraArr: []
         })
         // Toast.show(`${item.productNameEN} added to cart`);
 
     }
-    cancelSearch(){
-        console.log("_____________________________________");
-        
-        this.setState({ _isSearch: false })
-    
-      }
-    handleLike(bool, item) {
-        console.log(bool);
+    cancelSearch() {
 
-        console.log("liked");
-        console.log(item.id);
+        this.setState({ _isSearch: false })
+
+    }
+    handleLike(bool, item) {
+
 
 
     }
     componentDidMount() {
         this.unsubscribe = store.subscribe(() => {
-            this.setState({ counter: this.props.cartReducer.length })
+            setTimeout(() => {
+                this.setState({ counter: this.props.cartReducer.length })
+
+            }, 400);
 
         });
         // console.log(this.props.navigation.state.params.props.item.nameEN);
@@ -91,11 +92,23 @@ class MainCategory extends React.Component {
         // this.setState({ bestSellerProducts: this.props.bestsellerReducer }, (() => { this.setState({ isDataLoaded: true }) }))
         this.setState({ categoryArr: this.props.navigation.state.params.props.item.Catygory }, (() => { this.setState({ isDataLoaded: true }) }))
         let d = new Date();
-   
-  this.setState({nowHour:d.getHours()})
-//   console.log(this.props.navigation.state.params.props.item.Catygory);
-        this.setState({dataAdv:this.props.navigation.state.params.props.item.promoImgs})
+
+        this.setState({ nowHour: d.getHours() })
+        //   console.log(this.props.navigation.state.params.props.item.Catygory);
+        this.setState({ dataAdv: this.props.navigation.state.params.props.item.promoImgs })
         // console.log(this.props.navigation.state.params.props.item._id);
+        let tempSub = []
+        this.props.categoryReducer.forEach(Mcat => {
+
+            Mcat.Catygory.forEach(cat => {
+
+                tempSub.push(cat)
+
+            })
+
+        })
+        // console.log(tempSub);
+        this.setState({ subcategory: tempSub })
     }
     componentWillUnmount() {
         this.unsubscribe();
@@ -109,7 +122,7 @@ class MainCategory extends React.Component {
         }
     }
     submitItem = () => {
-        this.props.setCart({ itemID: this.props.navigation.state.params.item.id, count: this.state.count})
+        this.props.setCart({ itemID: this.props.navigation.state.params.item.id, count: this.state.count })
         if (this.state.count > 0) {
             // Toast.show(`${this.props.navigation.state.params.item.productNameEN} added to cart`);
         }
@@ -127,30 +140,55 @@ class MainCategory extends React.Component {
         // this._handleSearch(text)   //instant search
     }
     _handleSearch = (text) => {
-        let temp = []
-
-        let i = 0;
         if (text != "") {
-            this.setState({ _isSearch: true })
-            dataService.searchMainCategory(text, this.props.navigation.state.params.props.item._id).then(response => {
-                this.setState({ searchData: response.data.searchList }, () => {
 
+            dataService.search(text).then(response => {
+                this.state.subcategory.forEach(subcat => {
+                    if (subcat.nameAR.includes(text) || subcat.nameEN.toLowerCase().includes(text.toLowerCase())) {
+                        let open = true
+                        let d = new Date();
+                        let hours = d.getHours()
+                        let openHours = []
+                        if (subcat.close <= 24 && subcat.close > 12) {
+                            for (let index = subcat.open; index <= subcat.close; index++) {
+                                openHours.push(index)
+
+                            }
+                            open = openHours.includes(hours)
+                        }
+
+                        if (subcat.close <= 12 && subcat.close >= 0) {
+                            for (let index = subcat.open; index <= 24; index++) {
+                                openHours.push(index)
+
+                            }
+                            for (let index = 0; index < subcat.close; index++) {
+                                openHours.push(index)
+
+                            }
+
+                            open = openHours.includes(hours)
+                        }
+                        /////////////////
+                        if (open) {
+                            response.data.searchList.unshift(subcat)
+                        }
+
+                    }
 
                 })
-                // console.log(response.data);
+                this.setState({ searchData: response.data.searchList }, () => {
+                    this.setState({ _isSearch: true })
+                })
             }
             ).catch(err => {
-                console.log(err);
+                console.log(err.response);
             })
-
-
         }
         else {
             this.setState({ _isSearch: false })
             this.setState({ searchData: [] })
         }
-
-
     }
     navigateSubCategory(item, mainCategory) {
         this.props.navigation.navigate("SubCategory", { items: item, mainCategory: mainCategory })
@@ -181,6 +219,11 @@ class MainCategory extends React.Component {
 
 
     }
+    handlePressCategory(item) {
+        this.props.navigation.navigate("SubCategory", { items: item })
+
+
+    }
     _headerItem = ({ }) => (
 
         <View style={styles.textView}>
@@ -189,9 +232,9 @@ class MainCategory extends React.Component {
                 data={this.props.navigation.state.params.props.item.promoImgs}
                 renderItem={(item) =>
                     <TouchableOpacity onPress={() => { this.pressads(item) }}>
-                        <Image 
-                        // source={require("../../assets/ad.png")}
-                        source={{ uri: `http://www.beemallshop.com/img/CategoryPromo/${item.item.ad[0]}` }}
+                        <Image
+                            // source={require("../../assets/ad.png")}
+                            source={{ uri: `http://www.beemallshop.com/img/CategoryPromo/${item.item.ad[0]}` }}
                             style={[styles.advStyle, { borderRadius: 15 }]} />
                     </TouchableOpacity>
                 }
@@ -254,13 +297,17 @@ class MainCategory extends React.Component {
                         data={this.state.searchData}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.searchItem} onPress={() => this.handlePress(item)}>
+                            item.price ? <TouchableOpacity style={styles.searchItem} onPress={() => this.handlePress(item)}>
                                 <Text style={styles.searchItemFont}>{I18nManager.isRTL ? item.productNameAR : item.productNameEN}</Text>
-                            </TouchableOpacity>)}
+                            </TouchableOpacity> :
+                                <TouchableOpacity style={styles.searchItemCategory} onPress={() => this.handlePressCategory(item)}>
+                                    <Text style={styles.searchItemFont}>{I18nManager.isRTL ? item.nameAR : item.nameEN}</Text>
+                                </TouchableOpacity>
+                        )}
                     ></FlatList>
-                      <TouchableOpacity style={styles.searchClear} onPress={()=>{this.cancelSearch()}}>
-            <Text style={{fontSize:14,color:colors.white}}>Clear</Text>
-          </TouchableOpacity>
+                    <TouchableOpacity style={styles.searchClear} onPress={() => { this.cancelSearch() }}>
+                        <Text style={{ fontSize: 14, color: colors.white }}>Clear</Text>
+                    </TouchableOpacity>
                 </View>}
                 <View style={styles.yellowContainer}>
 
@@ -671,20 +718,27 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height * 94 / 812,
         resizeMode: 'contain'
     },
-    searchClear:{
+    searchClear: {
         width: Dimensions.get('window').width * 343 / 375,
-        height:40,
-        backgroundColor:colors.red,
-        justifyContent:'center',
-        alignItems:'center',
+        height: 40,
+        backgroundColor: colors.red,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
-      },
+    },
+    searchItemCategory: {
+        borderBottomWidth: .5,
+
+        backgroundColor: colors.green
+    },
 
 });
 const mapStateToProps = state => ({
     cartReducer: state.cartReducer,
     bestsellerReducer: state.bestsellerReducer,
+    categoryReducer: state.categoryReducer,
+
 })
 const mapDispatchToProps = {
     setCart,

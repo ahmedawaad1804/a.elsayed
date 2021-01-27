@@ -44,7 +44,6 @@ export const firstGetProducts = (data) => dispatch => {
 }
 
 export const setCart = (data) => dispatch => {
-    console.log("--------add------------------------");
     
     dispatch({
         type: 'INCREASE_CART_ITEMS',
@@ -73,7 +72,6 @@ export function getCart() {
 
 export const freeCart = () => dispatch => {
    
-   console.log("-fre---------------------------------");
    
     dispatch({
         type: 'FREE',

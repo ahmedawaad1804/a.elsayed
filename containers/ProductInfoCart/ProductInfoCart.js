@@ -49,7 +49,6 @@ class ProductInfoCart extends React.Component {
 
     static navigationOptions = { header: null }
     componentDidMount() {
-        console.log(this.props.navigation.state.params.item);
         
         // this.props.navigation.state.params.item.item.extraArray=[]
         this.setState({initialItem:this.props.navigation.state.params.item.item})
@@ -61,10 +60,13 @@ class ProductInfoCart extends React.Component {
         this.getCAtegoryData()
         this.setState({currentItem:this.props.navigation.state.params.item.item})
 
-        // console.log(this.props.navigation.state.params.item.item.extras);
+        // console.log(this.props.navigation.state.params.item.item);
 
         this.unsubscribe = store.subscribe(() => {
+            setTimeout(() => {
             this.setState({ counter: store.getState().cartReducer.length })
+                
+            }, 400);
             // console.log(store.getState());
 
         });
@@ -118,7 +120,6 @@ class ProductInfoCart extends React.Component {
         break;}
         case 2  :{ 
              let phoneNumber = '01066311099';
-        console.log(phoneNumber);
         if (Platform.OS === 'android') {
             phoneNumber = `tel:${phoneNumber}`;
         }

@@ -15,26 +15,21 @@ class MainCategoryItem extends React.Component {
   }
   componentDidMount() {
     // this.props
-    console.log(this.props.src.nameAR);
     this.setState({ source: this.props.src.icon })
   }
   // shouldComponentUpdate(){
-  //   console.log("amuy");
 
   //   return false
   // }
 
-  // console.log(data);
   render() {
     return (
-      <View>
         <TouchableOpacity style={styles.gridCell} onPress={() => { this.props.click() }}>
           <Image style={styles.imageThumbnail} source={{ uri: `http://www.beemallshop.com/img/MainCatIcons/${this.state.source}` }}
             onError={() => { this.setState({ source: "Beauty" }) }} />
           <Text style={styles.smallText}>{I18nManager.isRTL ? this.props.src.nameAR : this.props.src.nameEN}</Text>
           <View style={{ backgroundColor: '#ccc', height: "5%" }}></View>
         </TouchableOpacity>
-      </View>
 
     );
   }
@@ -55,8 +50,8 @@ const styles = StyleSheet.create({
     // , { width: 141 / 3, height: 118 / 3 }
   },
   gridCell: {
-    width: 106,
-    height: 90,
+    width: Dimensions.get('window').width * 7.5/30,
+    height: Dimensions.get('window').width * 7.5/30,
     borderRadius: 15,
     margin: 5,
     justifyContent: 'flex-end',
@@ -75,7 +70,7 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontFamily: 'Cairo-Bold',
-    fontSize: 14,
+    fontSize: 12,
     marginVertical: 2
   },
 

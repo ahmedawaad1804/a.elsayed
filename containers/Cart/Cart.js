@@ -70,7 +70,7 @@ class Cart extends React.Component {
     }
     _delete(item) {
         this.state.data.splice(this.state.data.findIndex(obj => obj.item._id == item.item._id && JSON.stringify(obj.item.extraArray) === JSON.stringify(item.item.extraArray)), 1);
-        this.setState({ data: this.state.data })
+        this.setState({ data: this.state.data },()=>{ this.props.setCartModifications(this.state.data)})
         this.calculate()
     }
     calculate() {

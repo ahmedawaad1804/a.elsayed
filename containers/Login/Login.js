@@ -19,6 +19,7 @@ import colors from '../../colors'
 import Padv from '../../components/ViewPad/PadV'
 /* services */
 import authService from '../../services/authService'
+import dataService from '../../services/dataService'
 /* redux*/
 import { getProducts } from '../../actions/product'
 import { setLogin } from '../../actions/loginAction'
@@ -29,8 +30,10 @@ import * as Facebook from 'expo-facebook';
 import Spinner from 'react-native-loading-spinner-overlay';
 /* google */
 import * as Google from 'expo-google-app-auth';
+// import * as AppleAuthentication from 'expo-apple-authentication';
 // ios clientID=628256299763-a7af1lisn6f4vh8vt6g2uhu4l8sp8k31.apps.googleusercontent.com
 import i18n from 'i18n-js';
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
 
 i18n.translations = {
   en: require('../../utilities/en.json'),
@@ -39,6 +42,7 @@ i18n.translations = {
 class Login extends React.Component {
   ////1209270809432735
   //3070973469686409
+
   FBlogIn = async () => {
     this.setState({ visible: true })
     Facebook.initializeAsync("3070973469686409")
@@ -50,7 +54,8 @@ class Login extends React.Component {
         permissions,
         declinedPermissions
       } = await Facebook.logInWithReadPermissionsAsync("3070973469686409", {
-        permissions: ["public_profile"]
+        permissions: ["public_profile"],
+        behavior: 'web'
       });
       // console.log(type);
       if (type === "success") {
@@ -184,7 +189,7 @@ class Login extends React.Component {
     _error: false,
     showPass: true,
     visible: false,
-
+    authFlag: false,
     animeHeight: new Animated.Value(Dimensions.get('window').height * 2)
   }
   setMenuRef = ref => {
@@ -228,6 +233,16 @@ class Login extends React.Component {
 
   }
   componentDidMount() {
+    dataService.getConfig().then(response => {
+      if (response.data.config == 'ok') {
+        this.setState({ authFlag: true })
+      }
+    }
+    ).catch(err => {
+      console.log(err.response.data.status)
+
+    })
+
     Animated.timing(this.state.animeHeight, {
       toValue: Dimensions.get('window').height,
       duration: 1000
@@ -306,7 +321,6 @@ class Login extends React.Component {
 
         }
         ).catch(err => {
-          console.log(err.response.data.status)
           this.setState({ _error: true })
           this.setState({ errorMessage: err.response.data.status })
         }
@@ -501,7 +515,7 @@ class Login extends React.Component {
 
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
-              <TouchableOpacity
+              {(this.state.authFlag || Platform.OS !== 'ios') && <TouchableOpacity
                 style={{
                   backgroundColor: "#3f5c9a",
                   alignItems: "center",
@@ -517,9 +531,9 @@ class Login extends React.Component {
               >
 
                 <FontAwesome name="facebook-f" size={20} color="white" />
-              </TouchableOpacity>
+              </TouchableOpacity>}
 
-              {true?<TouchableOpacity
+              {(this.state.authFlag || Platform.OS !== 'ios') && <TouchableOpacity
                 style={{
                   backgroundColor: "#de5246",
                   alignItems: "center",
@@ -536,19 +550,12 @@ class Login extends React.Component {
               >
 
                 <FontAwesome name="google" size={20} color="white" />
-              </TouchableOpacity>:
-                <AppleAuthentication.AppleAuthenticationButton
+              </TouchableOpacity>}
+              {(Platform.OS === 'ios') && <AppleAuthentication.AppleAuthenticationButton
                 buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
                 buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={5}
-                style={{ width: Dimensions.get('window').width * 160 / 375,
-                height: Dimensions.get('window').height * 46 / 812, 
-                alignItems: "center",
-                  justifyContent: "center",
-                borderWidth: 1,
-                borderRadius: 50,
-                marginHorizontal: 5
-              }}
+                cornerRadius={50}
+                style={{ width: Dimensions.get('window').width * 160 / 375, height: Dimensions.get('window').height * 46 / 812}}
                 onPress={async () => {
                   try {
                     const credential = await AppleAuthentication.signInAsync({
@@ -557,7 +564,8 @@ class Login extends React.Component {
                         AppleAuthentication.AppleAuthenticationScope.EMAIL,
                       ],
                     });
-                    // signed in
+                    console.log(credential);
+                  const l=await  AppleAuthentication.getCredentialStateAsync(credential.user)
                   } catch (e) {
                     if (e.code === 'ERR_CANCELED') {
                       // handle that the user canceled the sign-in flow
@@ -697,7 +705,7 @@ const styles = StyleSheet.create({
   textInputStyle: {
     paddingHorizontal: 10,
     fontFamily: 'Cairo-Bold',
-    textAlign: (I18nManager.isRTL ) ? 'right' : null
+    textAlign: (I18nManager.isRTL) ? 'right' : null
   },
   textInputStylePass: {
     paddingHorizontal: 10,

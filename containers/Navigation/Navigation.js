@@ -38,6 +38,8 @@ import advertising from '../advertising/advertising'
 import Inst from '../Inst/Inst'
 import ProductInfoCart from '../ProductInfoCart/ProductInfoCart'
 import AddAdressMap from '../AddAdressMap/AddAdressMap'
+import AddAdressProceed from '../AddAdressProceed/AddAdressProceed'
+
 
 /* trans */
 import i18n from 'i18n-js';
@@ -138,7 +140,8 @@ const MainStack = createStackNavigator({
     advertising,
     Inst,
     ProductInfoCart,
-    AddAdressMap
+    AddAdressMap,
+    AddAdressProceed
 
 
 })

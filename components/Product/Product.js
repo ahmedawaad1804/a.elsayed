@@ -11,8 +11,7 @@ import FastImage from 'react-native-fast-image'
 
 
 
-export default Product = (data) => {
-    // console.log(data.src);
+const Product = (data) => {
     const [heart, setHeart] = data.src.isliked ? useState(require("../../assets/icons/heart-red.png")) : useState(require("../../assets/icons/heart-sq.png"))
     // if(data.src.isliked){setHeart(require("../../assets/icons/heart-red.png"))}
     const handleChange = bool => {
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
     },
     discountBadge: {
         backgroundColor: 'red',
-        width: "26%",
+        width: "33%",
         height: "16%",
         position: 'absolute',
         right: 0,
@@ -215,6 +214,5 @@ const styles = StyleSheet.create({
         color: colors.white
     }
 });
-const mapStateToProps = state => ({
-    www: state.www
-})
+
+export default React.memo (Product)

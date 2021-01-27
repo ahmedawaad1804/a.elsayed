@@ -48,7 +48,6 @@ export default class advertising extends React.Component {
   }
   componentDidMount() {
 
-   console.log(this.props.navigation.state.params.src);
   }
   setMenuRef = ref => {
 

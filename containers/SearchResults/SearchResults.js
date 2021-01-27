@@ -12,9 +12,12 @@ import { Header } from 'react-navigation-stack';
 // import Toast from 'react-native-simple-toast';
 /* component */
 import Product from '../../components/Product/Product'
+import CategoryItem from '../../components/CategoryItem/CategoryItem'
+
 class SearchResults extends React.Component {
     state = {
-       
+        products: [],
+        categories: []
 
     };
 
@@ -24,11 +27,22 @@ class SearchResults extends React.Component {
         this.props.navigation.navigate("productInfo", { item: item })
 
     }
+    navigateSubCategory(item, mainCategory) {
+        this.props.navigation.navigate("SubCategory", { items: item, mainCategory: mainCategory })
+
+
+
+    }
     componentDidMount() {
+        let tempCat, tempProd = []
         console.log(this.props.navigation.state.params.items);
 
+        // this.setState({products:tempProd,categories:tempCat})
         this.unsubscribe = store.subscribe(() => {
-            this.setState({ counter: this.props.cartReducer.length })
+            setTimeout(() => {
+                this.setState({ counter: this.props.cartReducer.length })
+
+            }, 400);
 
         });
     }
@@ -83,8 +97,8 @@ class SearchResults extends React.Component {
 
                     <View style={styles.grid}>
                         <FlatList
-    
-        style={{     marginTop:20}}
+
+                            style={{ marginTop: 20 }}
                             key={item => { item.id }}
                             showsVerticalScrollIndicator={false}
                             contentContainerStyle={styles.grid}
@@ -94,10 +108,16 @@ class SearchResults extends React.Component {
 
                                 // <Text>sd</Text>
 
-
-                                <Product handlePress={() => this.handlePress(item)}
-                                    src={item}
-                                />
+                                item.price ?
+                                    <Product handlePress={() => this.handlePress(item)}
+                                        src={item}
+                                    />
+                                    :
+                                    <CategoryItem
+                                        click={() => this.navigateSubCategory(item, item.nameEN)}
+                                        src={item}
+                                    />
+                                // <Text>dd</Text>
 
                             }
                             numColumns={2}
@@ -148,7 +168,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 40,
         // padding: 20,
         paddingBottom: 0,
-        
+
 
 
     },
@@ -356,8 +376,8 @@ const styles = StyleSheet.create({
     grid: {
         justifyContent: 'center',
         alignItems: 'center',
-        
-      }
+
+    }
 
 });
 const mapStateToProps = state => ({

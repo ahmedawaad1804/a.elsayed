@@ -4,6 +4,8 @@ import store from '../../store'
 import { connect } from 'react-redux'
 /* colors */
 import colors from '../../colors'
+/* spinner */
+import Spinner from 'react-native-loading-spinner-overlay';
 /* padge */
 import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 import { getAdress } from '../../actions/adressAction'
@@ -17,20 +19,21 @@ import * as Location from 'expo-location';
 
 import AdressMenu from "../../components/AdreesMenu/AdressMenu"
 import AdressMenuCurrent from "../../components/AdreesMenu/AdressMenuCurrent"
+import { Platform } from 'react-native';
 class Adress extends React.Component {
     state = {
 
         data: [],
+        visible: false
 
     };
 
 
     static navigationOptions = { header: null }
     componentDidMount() {
-        
-        this.setState({ data: this.props.adressReducer },()=>{
+
+        this.setState({ data: this.props.adressReducer }, () => {
             // console.log(this.state.data);
-        console.log(this.state.data.find(obj=>{return obj.current==true}));
         })
         // console.log(this.props.userReducer.address);
         this.unsubscribe = store.subscribe(() => {
@@ -76,18 +79,39 @@ class Adress extends React.Component {
 
     }
     async addAdress() {
-        // let status = await Permissions.askAsync(Permissions.LOCATION)
-        // // let status = await Location.getPermissionsAsync()
-        // let location = await Location.getCurrentPositionAsync({})
-        // if(location){
+        if (Platform.OS == 'ios') {
             this.props.navigation.navigate("AddAdress")
-        // }
-        
+        }
+        else {
+            this.setState({ visible: true })
+            let status = await Permissions.askAsync(Permissions.LOCATION)
+            // let status = await Location.getPermissionsAsync()
+            let location = await Location.getCurrentPositionAsync({accuracy:6})
+            if (location) {
+
+                this.props.navigation.navigate("AddAdressMap", { coords: location.coords })
+                this.setState({ visible: false })
+
+            }
+            else {
+                this.setState({ visible: false })
+
+            }
+            setTimeout(() => {
+                this.setState({ visible: false })
+            }, 8000);
+
+
+        }
+
     }
 
     render() {
         return (
             <View style={styles.container}>
+                <View style={{ flex: 1 }}>
+                    <Spinner visible={this.state.visible} textContent={"Loading..."} textStyle={{ color: colors.white }} />
+                </View>
                 <View style={styles.headerContainer}>
 
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -118,7 +142,7 @@ class Adress extends React.Component {
                 </View>
 
                 <View style={styles.mainContainer}>
-                    {this.state.data.find(obj=>{return obj.current==true}) ? <View style={{ alignItems: 'flex-start', width: Dimensions.get('window').width, paddingHorizontal: 20 }}>
+                    {this.state.data.find(obj => { return obj.current == true }) ? <View style={{ alignItems: 'flex-start', width: Dimensions.get('window').width, paddingHorizontal: 20 }}>
                         <Text style={styles.headerText}>{I18nManager.isRTL ? "العنوان الحالي" : "Current Address"}</Text>
                         <Text style={styles.subHeaderText}>{I18nManager.isRTL ? "إستلام الطلبات علي هذا العنوان" : "You will be receiving your orders on this address"}</Text>
                     </View> :

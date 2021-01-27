@@ -58,7 +58,7 @@ class SubCategory extends React.Component {
 
     static navigationOptions = { header: null }
     handleCartAddOne(item) {
-        item.extraArray=[]
+        item.extraArray = []
 
         this.props.setCart({
             item: item, count: 1
@@ -128,7 +128,10 @@ class SubCategory extends React.Component {
 
 
         this.unsubscribe = store.subscribe(() => {
-            this.setState({ counter: this.props.cartReducer.length })
+            setTimeout(() => {
+                this.setState({ counter: this.props.cartReducer.length })
+
+            }, 400);
 
         });
     }
@@ -159,7 +162,7 @@ class SubCategory extends React.Component {
             handleCartAddOne={() => this.handleCartAddOne(item)}
             src={item}
         />)
-    onRefresh=()=> {
+    onRefresh = () => {
         this.setState({ refreshing: true })
         // this.getData()
         this.setState({ refreshing: false })
@@ -238,13 +241,17 @@ class SubCategory extends React.Component {
                         {this.state._isLoaded ?
                             <FlatList
 
-                                style={{ marginBottom: Dimensions.get('window').height * 70 / 812 }}
+                                style={{
+                                    marginBottom: Dimensions.get('window').height * 70 / 812,
+                                    width: Dimensions.get('window').width
+                                }}
                                 key={item => { item.id }}
                                 showsVerticalScrollIndicator={false}
                                 contentContainerStyle={styles.grid}
                                 data={this.state.data}
                                 renderItem={this.renderItem}
                                 numColumns={3}
+                                horizontal={false}
                                 refreshControl={
                                     <RefreshControl
                                         refreshing={this.state.refreshing}

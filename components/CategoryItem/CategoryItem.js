@@ -1,34 +1,45 @@
 import React from 'react';
 import { StyleSheet, Text, View, CheckBox, I18nManager, Button, Input, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, KeyboardAvoidingView, ImageBackground } from 'react-native';
-import store from '../../store'
-import { connect } from 'react-redux'
+
 /* colors */
 import colors from '../../colors'
-import { Header } from 'react-navigation-stack';
 
-export default CategoryItem = (data) => {
-let open=true
-  // console.log(data);
+const CategoryItem = (data) => {
+
+  let open = true
   let d = new Date();
-  let hours=d.getHours()
-  let openHours=[]
-  // console.log(hours);
-  //  console.log(data.src.close);
-  //  console.log(data.src.open);
-if(data.src.close>=0&&data.src.close<12 || data.src.close==24){
+  let hours = d.getHours()
+  let openHours = []
 
-            openHours.push()
-}
+  if (data.src.close <= 24 && data.src.close > 12) {
+    for (let index = data.src.open; index <= data.src.close; index++) {
+      openHours.push(index)
 
-// if(data.src.close<d.getHours() && data.src.open<d.getHours() ){
-//   open=false
-// }
+    }
+    open = openHours.includes(hours)
+  }
+
+  if (data.src.close <= 12 && data.src.close >= 0) {
+    for (let index = data.src.open; index <= 24; index++) {
+      openHours.push(index)
+
+    }
+    for (let index = 0; index < data.src.close; index++) {
+      openHours.push(index)
+
+    }
+
+    open = openHours.includes(hours)
+  }
+
+
+
   return (
     <View>
-      <TouchableOpacity style={styles.gridCell} onPress={open?data.click:data.notclick} >
+      <TouchableOpacity style={styles.gridCell} onPress={open ? data.click : data.notclick} >
         <Image style={styles.imageThumbnail} source={{ uri: `http://www.beemallshop.com/img/CatIcons/${data.src.icon}` }} />
-        {!open &&<Image style={styles.imageError} source={require("../../assets/categories/close.png")} />}
-          <Text style={styles.smallText}>{I18nManager.isRTL ? data.src.nameAR : data.src.nameEN}</Text>
+        {!open && <Image style={styles.imageError} source={require("../../assets/categories/close.png")} />}
+        <Text style={styles.smallText}>{I18nManager.isRTL ? data.src.nameAR : data.src.nameEN}</Text>
         <View style={{ backgroundColor: '#ccc', height: Dimensions.get('window').height * 12 / 812 }}></View>
       </TouchableOpacity>
     </View>
@@ -57,9 +68,9 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 95 * .75 / 812,
     resizeMode: "contain",
     marginTop: 5,
-    position:'absolute',
-    opacity:0.8
-    
+    position: 'absolute',
+    opacity: 0.8
+
     // backgroundColor:'red'
     // , { width: 141 / 3, height: 118 / 3 }
   },
@@ -85,12 +96,10 @@ const styles = StyleSheet.create({
   smallText: {
     fontFamily: 'Cairo-Bold',
     fontSize: 14,
-    textAlign:'center'
+    textAlign: 'center'
   },
 
 
 });
-const mapStateToProps = state => ({
-  www: state.www
-})
 
+export default React.memo(CategoryItem)

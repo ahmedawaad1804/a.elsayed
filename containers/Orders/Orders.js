@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, RefreshControl, FlatList, ActivityIndicator, Button, Animated, I18nManager,Input, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, RefreshControl, FlatList, ActivityIndicator, Button, Animated, I18nManager, Input, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, KeyboardAvoidingView, ImageBackground } from 'react-native';
 import store from '../../store'
 import { connect } from 'react-redux'
 /* colors */
@@ -29,10 +29,10 @@ class MainCategory extends React.Component {
 
         ],
         orders: [
-         
+
         ],
         ordersHistory: [
-            
+
         ],
         counter: this.props.cartReducer.length,
         _isPressed: 0,
@@ -47,22 +47,26 @@ class MainCategory extends React.Component {
     };
 
     componentDidMount() {
-        store.subscribe(() => {
-            this.setState({ counter: this.props.cartReducer.length })
-            // console.log("subscribed");
+        this.unsubscribe = store.subscribe(() => {
+            setTimeout(() => {
+                this.setState({ counter: this.props.cartReducer.length })
+
+            }, 400);
+
         });
+
         orderService.getClientOrders().then(res => {
             // console.log(res.data);
             this.setState({ loop: res.data })
-            this.setState({ data: res.data },()=>{this._handlePress(0)})
+            this.setState({ data: res.data }, () => { this._handlePress(0) })
         }).catch(err => { console.log(err); })
         this.interval = setInterval(() => {
-            
-             orderService.getClientOrders().then(res => {
-            // console.log(res.data);
-            this.setState({ loop: res.data })
-            // this.setState({ data: res.data })
-        }).catch(err => { console.log(err); })
+
+            orderService.getClientOrders().then(res => {
+                // console.log(res.data);
+                this.setState({ loop: res.data })
+                // this.setState({ data: res.data })
+            }).catch(err => { console.log(err); })
         }, 5000);
 
         // this.setState({ loop: this.state.orders })
@@ -80,27 +84,27 @@ class MainCategory extends React.Component {
     componentWillUnmount() {
 
         clearInterval(this.interval)
+        this.unsubscribe();
     }
-    _handlePress  (item)  {
-        console.log("jkkk");
+    _handlePress(item) {
         this.setState({ _isPressed: item })
         console.log(item);
         let temp = []
 
-        if(item==0){
-            this.state.loop.forEach(element=>{
-                if(element.status!="canceled" && element.status!="completed"&&element.status!="canceled by admin"){
-                    temp.push(element)
-                } 
-            })
-            this.setState({data:temp})
-        }else{
-            this.state.loop.forEach(element=>{
-                if(element.status=="canceled" ||element.status=="completed"||element.status=="canceled by admin"){
+        if (item == 0) {
+            this.state.loop.forEach(element => {
+                if (element.status != "canceled" && element.status != "completed" && element.status != "canceled by admin") {
                     temp.push(element)
                 }
             })
-            this.setState({data:temp})
+            this.setState({ data: temp })
+        } else {
+            this.state.loop.forEach(element => {
+                if (element.status == "canceled" || element.status == "completed" || element.status == "canceled by admin") {
+                    temp.push(element)
+                }
+            })
+            this.setState({ data: temp })
         }
         // item == 0 ? this.setState({ loop: this.state.orders }) : this.setState({ loop: this.state.ordersHistory })
 
@@ -128,17 +132,17 @@ class MainCategory extends React.Component {
     _handleRegister = () => {
         this.props.navigation.navigate("Register")
     }
-openOrder(id){
-    console.log(id);
-    this.props.navigation.navigate("MyOrder",{id})
+    openOrder(id) {
+        console.log(id);
+        this.props.navigation.navigate("MyOrder", { id })
 
 
-}
+    }
 
     render() {
         return (
             <View style={styles.container}>
-               <View style={styles.headerContainer}>
+                <View style={styles.headerContainer}>
 
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <View style={{ padding: 20 }} >
@@ -151,9 +155,9 @@ openOrder(id){
                             fontSize: 20,
                         }}>{I18nManager.isRTL ? "طلباتي" : "My orders"}</Text>
                     </View>
-                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                     {this.state._isLogIn &&  <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 30, width: "70%" }}
-                     onPress={() => { this.props.navigation.navigate("Cart") }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        {this.state._isLogIn && <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 30, width: "70%" }}
+                            onPress={() => { this.props.navigation.navigate("Cart") }}>
                             <Image source={require("../../assets/icons/cart.png")}
                                 style={styles.cartImageStyle} />
                             {this.state.counter > 0 ? (<Badge
@@ -174,7 +178,7 @@ openOrder(id){
                     {this.state._isDataLoaded && <View style={{ justifyContent: 'center', height: Dimensions.get('window').height * 46 / 812, alignItems: 'center', marginBottom: 15 }}>
                         <ScrollView style={{ backgroundColor: colors.fade, borderRadius: 40 }} horizontal={true} showsHorizontalScrollIndicator={false}>
                             {
-                               (I18nManager.isRTL ? this.state.orderTypesAR:  this.state.orderTypes).map((item, key) => (
+                                (I18nManager.isRTL ? this.state.orderTypesAR : this.state.orderTypes).map((item, key) => (
 
                                     <TouchableOpacity style={{ backgroundColor: this.state._isPressed === key ? colors.primary : colors.fade, borderRadius: 40, width: Dimensions.get('window').width * 343 / (375 * 2), height: "100%", alignItems: 'center', justifyContent: 'center', flex: 1, flexDirection: 'row' }}
                                         onPress={() => { this._handlePress(key) }}>
@@ -192,12 +196,7 @@ openOrder(id){
                     {this.state._isDataLoaded && <View>
                         <FlatList
                             showsVerticalScrollIndicator={false}
-                            // ListHeaderComponent={this._headerItem}
-                            // maxToRenderPerBatch={20}
-                            // updateCellsBatchingPeriod={20}
-                            // legacyImplementation={false}
-                            // initialNumToRender={50}
-                            // ItemSeparatorComponent = { (<View><Text>asdf</Text></View>) }
+
                             contentContainerStyle={{ paddingBottom: 100 }}
                             data={this.state.data}
 
@@ -253,7 +252,7 @@ openOrder(id){
                         <TouchableOpacity style={styles.tOpacity}
                             // disabled={this.state._ckeckSignIn}
                             onPress={() => this._handleRegister()}>
-                            <Text style={styles.text}>{I18nManager.isRTL ?  "تسجيل" : "Register"}</Text>
+                            <Text style={styles.text}>{I18nManager.isRTL ? "تسجيل" : "Register"}</Text>
 
 
                         </TouchableOpacity>

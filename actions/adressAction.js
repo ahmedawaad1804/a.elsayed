@@ -27,7 +27,6 @@ export const getAdress = (data) => dispatch => {
 
 }
 export const addAdress = (data) => dispatch => {
-//    console.log(data);
         dispatch({
             type: 'ADD_ADRESS',
             payload: data

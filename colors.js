@@ -11,6 +11,7 @@ export default {
     badge:"#F6485D",
     gold:"#D9A700",
     red:"#F6485D",
-    grey:"#EFEFEF"
+    grey:"#EFEFEF",
+    green:'#FF5733'
 
 }

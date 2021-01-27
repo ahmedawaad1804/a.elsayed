@@ -32,41 +32,40 @@ class MyOrder extends React.Component {
         errorMessage: " ",
         _error: false,
         products: [],
-        minutes:15,
-        hours:1
+        minutes: 15,
+        hours: 1
     };
 
     componentDidMount() {
         // console.log(this.props.navigation.state.params);
 
-        
+
         for (const prod of this.props.navigation.state.params.id.products) {
             // tempArr.push({
             //     count:prod.count  
             // })
-           prod.item=prod.productId
+            prod.item = prod.productId
         }
 
         this.setState({ order: this.props.navigation.state.params.id, products: this.props.navigation.state.params.id.products })
-        // console.log(this.props.navigation.state.params.id.products );
-        // console.log(this.state.order.timeForDilvery);
-        if(this.state.order.timeForDilvery){
-        this.setState({
-            hours:parseInt(this.state.order.timeForDilvery/60) ,minutes:this.state.order.timeForDilvery%60
-        })}
+
+        if (this.state.order.timeForDilvery) {
+            this.setState({
+                hours: parseInt(this.state.order.timeForDilvery / 60), minutes: this.state.order.timeForDilvery % 60
+            })
+        }
     }
     cancel() {
         this.props.navigation.navigate("CancelOrder", { orderID: this.state.order._id })
 
     }
-    openItem(item){
-        // console.log("-------------------------------");
-        // console.log(item);
-        
-            this.props.navigation.navigate("ProductInfoCart", { item: item })
-        
-         
-        
+    openItem(item) {
+
+
+        this.props.navigation.navigate("ProductInfoCart", { item: item })
+
+
+
     }
     render() {
         return (
@@ -108,14 +107,14 @@ class MyOrder extends React.Component {
                 <View style={styles.mainContainer}>
                     <View style={{ alignItems: "center", flex: 1 }}>
                         <Text style={styles.errorText}>{this.state.errorMessage}</Text>
-                        <View style={{ justifyContent: 'flex-start', width: Dimensions.get('window').width - 20,marginBottom:20 }}>
+                        <View style={{ justifyContent: 'flex-start', width: Dimensions.get('window').width - 20, marginBottom: 20 }}>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "رقم الاوردر" : "Order Id"} :   {this.state.order.orderTimeID}</Text>
-                            <Text style={styles.descText}>{I18nManager.isRTL ? "السعر" : "Price"} :   { Number.parseFloat(this.state.order.totalOrder).toFixed(2)}</Text>
+                            <Text style={styles.descText}>{I18nManager.isRTL ? "السعر" : "Price"} :   {Number.parseFloat(this.state.order.totalOrder).toFixed(2)}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "التاريخ" : "Date"} :   {this.state.order.Date}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "الحالة" : "Status"} :   {this.state.order.status}</Text>
                             <Text style={styles.descText}>{I18nManager.isRTL ? "وقت التوصيل" : "Time for delivery"} :   {this.state.hours}   {I18nManager.isRTL ? "ساعة" : "hours"} {this.state.minutes}   {I18nManager.isRTL ? "دقيقة" : "minutes"}</Text>
-                            {this.props.navigation.state.params.id.promo &&<Text style={styles.descText}>{I18nManager.isRTL ? "كود الخصم" : "Promo Code"} :   {this.props.navigation.state.params.id.promo.promoName}</Text>}
-                            {this.props.navigation.state.params.id.promo &&<Text style={styles.descTextPrice}>{I18nManager.isRTL ? "قيمة الخصم" : "Promo Discount"} :   {this.props.navigation.state.params.id.promo.discount}</Text>}
+                            {this.props.navigation.state.params.id.promo && <Text style={styles.descText}>{I18nManager.isRTL ? "كود الخصم" : "Promo Code"} :   {this.props.navigation.state.params.id.promo.promoName}</Text>}
+                            {this.props.navigation.state.params.id.promo && <Text style={styles.descTextPrice}>{I18nManager.isRTL ? "قيمة الخصم" : "Promo Discount"} :   {this.props.navigation.state.params.id.promo.discount}</Text>}
                         </View>
                         <FlatList
 
@@ -125,7 +124,7 @@ class MyOrder extends React.Component {
                             contentContainerStyle={styles.grid}
                             data={this.state.products}
                             renderItem={({ item }) =>
-                                <TouchableOpacity style={styles.orderOpacity} onPress={()=>{this.openItem(item)}} >
+                                <TouchableOpacity style={styles.orderOpacity} onPress={() => { this.openItem(item) }} >
                                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                         <Image
                                             source={{ uri: `http://www.beemallshop.com/img/productImages/${item.productId.images[0]}` }}
@@ -134,9 +133,9 @@ class MyOrder extends React.Component {
                                     </View>
                                     <View style={{ flex: 4, justifyContent: 'center' }}>
                                         <View style={{ justifyContent: 'center', marginLeft: 20 }}>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}>{I18nManager.isRTL ? item.productId.productNameAR : item.productId.productNameEN}</Text>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}> {I18nManager.isRTL ? "السعر" : "Price"}  {Number.parseFloat(item.PurchasingPrice).toFixed(2)} {I18nManager.isRTL ? "ج.م" : "EGP"}</Text>
-                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold",alignSelf:'flex-start' }}> {I18nManager.isRTL ? "العدد" : "Count"}  {item.count} </Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold", alignSelf: 'flex-start' }}>{I18nManager.isRTL ? item.productId.productNameAR : item.productId.productNameEN}</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold", alignSelf: 'flex-start' }}> {I18nManager.isRTL ? "السعر" : "Price"}  {Number.parseFloat(item.PurchasingPrice).toFixed(2)} {I18nManager.isRTL ? "ج.م" : "EGP"}</Text>
+                                            <Text style={{ fontSize: 14, fontFamily: "Cairo-Bold", alignSelf: 'flex-start' }}> {I18nManager.isRTL ? "العدد" : "Count"}  {item.count} </Text>
                                         </View>
                                     </View>
 
@@ -260,12 +259,12 @@ const styles = StyleSheet.create({
     descText: {
         fontFamily: 'Cairo-Regular',
         fontSize: 14,
-        alignSelf:'flex-start'
+        alignSelf: 'flex-start'
     },
     descTextPrice: {
         fontFamily: 'Cairo-Regular',
         fontSize: 14,
-        color:'green'
+        color: 'green'
     },
     headerText: {
         marginLeft: Dimensions.get('window').width * 32 / 375,

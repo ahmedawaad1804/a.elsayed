@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, Dimensions, SafeAreaView, I18nManager,TouchableWithoutFeedback,Keyboard } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Dimensions, SafeAreaView, I18nManager, TouchableWithoutFeedback, Keyboard } from 'react-native';
 // import { StatusBar } from 'expo-status-bar';
 /* notification */
-
+import NetInfo from "@react-native-community/netinfo";
 /*screens */
 import Navigation from './containers/Navigation/Navigation'
 /* redux */
@@ -13,6 +13,7 @@ import colors from './colors'
 /* fonts */
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
+import Spinner from 'react-native-loading-spinner-overlay';
 /* fonts */
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -28,7 +29,6 @@ const fetchFonts = () => {
 import i18n from 'i18n-js';
 
 // Set the locale once at the beginning of your app.
-console.log(I18nManager.isRTL);
 i18n.locale = I18nManager.isRTL ? "ar" : 'en'
 // When a value is missing from a language it'll fallback to another language with the key present.
 i18n.fallbacks = true;
@@ -39,14 +39,21 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataLoaded: false
+      dataLoaded: false,
+      visible: false
     };
   }
   componentDidMount() {
-    // store.dispatch(getProducts())
+    this.unsubscribe = NetInfo.addEventListener(state => {
 
-    // console.log( StatusBar);
+      this.setState({ visible: !state.isConnected })
+    });
 
+
+
+  }
+  componentWillUnmount() {
+    this.unsubscribe();
   }
   render() {
     if (!this.state.dataLoaded) {
@@ -61,34 +68,30 @@ export default class App extends React.Component {
       )
     }
     return (
-      // <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 
-        <View style={styles.container}>
-          <SafeAreaView style={styles.topSafeArea}
-           >
-              <StatusBar
-              //  style="light"
-              // hidden={true}
-              backgroundColor={colors.primary}
-              barStyle="dark-content"
-              drawBehind={true}
+      <View style={styles.container}>
+        <Spinner visible={this.state.visible} textContent={I18nManager.isRTL ? "يرجي الاتصال بشبكة انترنت" : "Please connect to an internet network"} textStyle={{ color: colors.black }} />
+        <SafeAreaView style={styles.topSafeArea}
+        >
+          <StatusBar
+
+            backgroundColor={colors.primary}
+            barStyle="dark-content"
+            drawBehind={true}
             visible={true}
-            // backgroundColor={colors.primary}
-            // translucent
-            // showHideTransition= 'slide'
 
-            />
-           </SafeAreaView>
-          <View style={styles.container}>
 
-           
-            <Provider store={store}>
-              <Navigation />
-            </Provider>
+          />
+        </SafeAreaView>
+        <View style={styles.container}>
 
-          </View >
-        </View>
-      //  {/* </TouchableWithoutFeedback> */}
+
+          <Provider store={store}>
+            <Navigation />
+          </Provider>
+
+        </View >
+      </View>
 
     );
   }
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
     // backgroundColor: '#ccc',
     // alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:"red",
+    backgroundColor: "red",
     // marginTop: Expo.Constants.statusBarHeight,
     // marginBottom: Expo.Constants.statusBarHeight,
   },

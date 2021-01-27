@@ -13,10 +13,8 @@ import FastImage from 'react-native-fast-image'
 
 export default OrderItem = (data) => {
     let imageSource
-    // console.log(data);
    
     const click = () => {
-        // console.log("gg");
         data.handlePress();
     }
     switch (data.src.status) {

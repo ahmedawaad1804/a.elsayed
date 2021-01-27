@@ -12,7 +12,6 @@ import domain from '../../services/config'
 
 
 export default ProductTriple = (data) => {
-    // console.log(data.src);
     let stringAR=data.src.productNameAR.length<35?data.src.productNameAR:(data.src.productNameAR.substring(0, 35)+"...")
     let stringEN=data.src.productNameEN.length<35?data.src.productNameEN:(data.src.productNameEN.substring(0, 35)+"...")
     const [heart, setHeart] = data.src.isliked ? useState(require("../../assets/icons/heart-red.png")) : useState(require("../../assets/icons/heart-sq.png"))

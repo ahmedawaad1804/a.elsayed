@@ -13,8 +13,7 @@ const INITIAL_STATEA = [];
 const merge = (prev, next) => Object.assign({}, prev, next);
 
 const cartReducer = (state = INITIAL_STATEA, action) => {
-  console.log("___________________________");
-  console.log(action);
+  
   
   if (action.type == INCREASE_CART_ITEMS && action.payload.count != 0) {
     let newState = [...state];
@@ -25,8 +24,7 @@ const cartReducer = (state = INITIAL_STATEA, action) => {
     // console.log(JSON.stringify(["1"]) === JSON.stringify(["1",]));
     // console.log(state.foreach(obj => {if(obj.item._id === action.payload.item._id &&  JSON.stringify(obj.item.extraArray) === JSON.stringify(action.payload.item.extraArray)  ) {return true}}));
 
-    console.log("----------------stste-------------------");
-    console.log(state);
+   
     // );
     // for (let index = 0; index < state.length; index++) {
     //     const obj = state[index];

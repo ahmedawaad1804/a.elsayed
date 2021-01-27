@@ -126,7 +126,6 @@ class Register extends React.Component {
 
         authService.register(this.state.phonenumber, this.state.password, this.state.username, this.state.email).then(async response => {
           //save token and navigatexf
-          console.log(response.data.status);
 
 
 

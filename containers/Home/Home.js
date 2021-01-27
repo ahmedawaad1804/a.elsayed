@@ -67,7 +67,8 @@ class Home extends React.Component {
     _isSearch: false,
     searchData: [],
     index: 0,
-    dataAdv: []
+    dataAdv: [],
+    subcategory: []
 
   };
 
@@ -76,11 +77,11 @@ class Home extends React.Component {
     this.setState({ count: this.props.cartReducer.length })
 
     store.subscribe(() => {
-   
+      console.log('cart updated');
       setTimeout(() => {
-      this.setState({ count: this.props.cartReducer.length })
-        
-      }, 500);
+        this.setState({ count: this.props.cartReducer.length })
+
+      }, 400);
 
     });
 
@@ -115,7 +116,20 @@ class Home extends React.Component {
     }).catch(err => {
       console.log(err);
     })
+    let tempSub = []
+    // console.log(this.props.categoryReducer[1]);
 
+    this.props.categoryReducer.forEach(Mcat => {
+
+      Mcat.Catygory.forEach(cat => {
+
+        tempSub.push(cat)
+
+      })
+
+    })
+    // console.log(tempSub);
+    this.setState({ subcategory: tempSub })
   }
 
 
@@ -148,8 +162,7 @@ class Home extends React.Component {
   // if(event.nativeEvent.contentOffset.y<20){this.setState({borderRadius:40})}
   //   }
   navigateMainCategory(title, props) {
-    // console.log("////////////////////");
-    // console.log(props.item._id);
+
 
     this.props.navigation.navigate("MainCategory", { title, props })
 
@@ -159,11 +172,15 @@ class Home extends React.Component {
     this.props.navigation.navigate("productInfo", { item: item })
 
   }
-  handleCartAddOne(item) {
-    // console.log(item._id);
-      item.extraArray=[]
+  handlePressCategory(item) {
+    this.props.navigation.navigate("SubCategory", { items: item })
 
-    
+
+  }
+  handleCartAddOne(item) {
+    item.extraArray = []
+
+
     this.props.setCart({
       item: item, count: 1,
     })
@@ -204,35 +221,59 @@ class Home extends React.Component {
     // this._handleSearch(text)   //instant search
   }
   _handleSearch = (text) => {
-    let temp = []
-    // console.log(text);
-    let i = 0;
     if (text != "") {
-      this.setState({ _isSearch: true })
+
       dataService.search(text).then(response => {
-        console.log(response.data.searchList);
-        this.setState({ searchData: response.data.searchList }, () => {
+        this.state.subcategory.forEach(subcat => {
 
+          if (subcat.nameAR.includes(text) || subcat.nameEN.toLowerCase().includes(text.toLowerCase())) {
+            /////////////
+            let open = true
+            let d = new Date();
+            let hours = d.getHours()
+            let openHours = []
+            if (subcat.close <= 24 && subcat.close > 12) {
+              for (let index = subcat.open; index <= subcat.close; index++) {
+                openHours.push(index)
 
+              }
+              open = openHours.includes(hours)
+            }
+
+            if (subcat.close <= 12 && subcat.close >= 0) {
+              for (let index = subcat.open; index <= 24; index++) {
+                openHours.push(index)
+
+              }
+              for (let index = 0; index < subcat.close; index++) {
+                openHours.push(index)
+
+              }
+
+              open = openHours.includes(hours)
+            }
+            /////////////////
+            if (open) {
+              response.data.searchList.unshift(subcat)
+            }
+
+          }
         })
-        // console.log(response.data);
+        this.setState({ searchData: response.data.searchList }, () => {
+          this.setState({ _isSearch: true })
+        })
       }
       ).catch(err => {
         console.log(err.response);
       })
-
-
     }
     else {
       this.setState({ _isSearch: false })
       this.setState({ searchData: [] })
     }
-
-
   }
-  cancelSearch(){
-    console.log("_____________________________________");
-    
+  cancelSearch() {
+
     this.setState({ _isSearch: false })
 
   }
@@ -245,15 +286,15 @@ class Home extends React.Component {
 
   _render = ({ item }) =>
 
-    (
-      (item.mainCategory == this.props.navigation.state.params.title) &&
-      (this.state.searchWord == "" || item.productNameEN.includes(this.state.searchWord) || item.productNameAR.includes(this.state.searchWord)) &&
-      // <Text>sd</Text>
-      <Product handlePress={() => this.handlePress(item)}
-        src={item}
-      />
+  (
+    (item.mainCategory == this.props.navigation.state.params.title) &&
+    (this.state.searchWord == "" || item.productNameEN.includes(this.state.searchWord) || item.productNameAR.includes(this.state.searchWord)) &&
+    // <Text>sd</Text>
+    <Product handlePress={() => this.handlePress(item)}
+      src={item}
+    />
 
-    )
+  )
   _headerItem = ({ }) => (
     <View style={{ alignItems: 'center' }}>
 
@@ -278,17 +319,33 @@ class Home extends React.Component {
           autoplayInterval={4000}
           useScrollView
 
-        loop={true}
+          loop={true}
         />
         <Text style={styles.titleText}>{i18n.t('discover')}</Text>
       </View>
       <View style={styles.horizontalScrollController}>
-
+        <Image
+          source={require('../../assets/icons/back.png')}
+          style={{
+            width: Dimensions.get('window').width * 10 * 1.4 / 375,
+            height: Dimensions.get('window').height * 18 * 1.4 / 812,
+            position: 'absolute',
+            zIndex: 12,
+            right: 20,
+            bottom: -30,
+            // backgroundColor:'red',
+            // transform:[{ rotateX: '180deg',rotateY:'180deg' }],
+            rotation: I18nManager.isRTL ? 0 : 180,
+            fadeDuration: 1000
+          }}
+        />
         {/* onPress={() => this.navigateMainCategory(`${this.props.categoryReducer[index].mainCategory}`, { item: this.props.categoryReducer[index] })} */}
         <FlatList
           data={this.props.categoryReducer}
           style={styles.horizontalScroll}
           horizontal={true}
+          onEndReachedThreshold={1}
+          onEndReached={() => { console.log("dd"); }}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
             index % 2 == 0 &&
@@ -318,7 +375,7 @@ class Home extends React.Component {
   )
   render() {
     return (
-    
+
       <View style={styles.container}>
 
         <View style={styles.mainImageView}>
@@ -349,12 +406,27 @@ class Home extends React.Component {
             data={this.state.searchData}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.searchItem} onPress={() => this.handlePress(item)}>
+
+              item.price ? <TouchableOpacity style={styles.searchItem} onPress={() => this.handlePress(item)}>
                 <Text style={styles.searchItemFont}>{I18nManager.isRTL ? item.productNameAR : item.productNameEN}</Text>
-              </TouchableOpacity>)}
+                <Image
+                  //  source={{ uri: data.src.uri }}
+                  source={{ uri: `http://www.beemallshop.com/img/productImages/${item.images[0]}` }}
+                  style={styles.searchProductStyle} />
+              </TouchableOpacity> :
+                <TouchableOpacity style={styles.searchItemCategory} onPress={() => this.handlePressCategory(item)}>
+                  <Text style={styles.searchItemFontCategory}>{I18nManager.isRTL ? item.nameAR : item.nameEN}</Text>
+                  <Image
+                    //  source={{ uri: data.src.uri }}
+                    source={{ uri: `http://www.beemallshop.com/img/CatIcons/${item.icon}` }}
+                    style={styles.searchCategoryStyle} />
+                </TouchableOpacity>
+
+
+            )}
           ></FlatList>
-          <TouchableOpacity style={styles.searchClear} onPress={()=>{this.cancelSearch()}}>
-            <Text style={{fontSize:14,color:colors.white}}>Clear</Text>
+          <TouchableOpacity style={styles.searchClear} onPress={() => { this.cancelSearch() }}>
+            <Text style={{ fontSize: 14, color: colors.white }}>Clear</Text>
           </TouchableOpacity>
         </View>}
         <View style={styles.yellowContainer}>
@@ -383,7 +455,7 @@ class Home extends React.Component {
 
         </View>
         {/* <ScrollView> */}
-{/* <TouchableWithoutFeedback onPress={()=>{this.cancelSearch()}}> */}
+        {/* <TouchableWithoutFeedback onPress={()=>{this.cancelSearch()}}> */}
         <View style={[styles.mainContainer, { borderTopLeftRadius: this.state.borderRadius, borderTopRightRadius: this.state.borderRadius, paddingTop: 30 }]}>
           {(this.state.isDataLoaded) &&
             (<View style={styles.MainScrollView}
@@ -402,8 +474,7 @@ class Home extends React.Component {
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={styles.grid}
                   stickySectionHeadersEnabled={false}
-                  sections={[{ title: i18n.t('lf'), data: this.state.LatestOffersProducts },
-                  { title: i18n.t('bs'), data: this.state.bestSellerProducts }]}
+                  sections={[{ title: i18n.t('lf'), data: this.state.LatestOffersProducts }]}
                   // sections={[{ title: i18n.t('bs'), data: this.state.bestSellerProducts },
                   // { title: i18n.t('lf'), data: this.state.LatestOffersProducts }]}
                   renderSectionHeader={({ section: { title } }) => (
@@ -467,7 +538,7 @@ class Home extends React.Component {
 
       </View >
 
-     
+
     );
   }
 }
@@ -561,7 +632,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Cairo-Bold',
     fontSize: 30,
     backgroundColor: colors.white,
-    paddingVertical:10,
+    paddingVertical: 10,
     // color:'green'
   },
   textView: {
@@ -636,7 +707,7 @@ const styles = StyleSheet.create({
     // height:180
   },
   horizontalScrollController: {
-    height:200,
+    height: 200,
     marginHorizontal: 10
   },
   yellowContainer: {
@@ -686,32 +757,62 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     maxHeight: 270
   },
-  searchClear:{
+  searchClear: {
     width: Dimensions.get('window').width * 343 / 375,
-    height:40,
-    backgroundColor:colors.red,
-    justifyContent:'center',
-    alignItems:'center',
+    height: 40,
+    backgroundColor: colors.red,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
   searchItemFont: {
     fontSize: 13,
     fontFamily: "Cairo-SemiBold",
-    margin: 15
+    marginVertical: 15
+  },
+  searchItemFontCategory: {
+    fontSize: 16,
+    fontFamily: "Cairo-Bold",
+    margin: 15,
+    color: colors.white
   },
   searchItem: {
     borderBottomWidth: .5,
-    borderBottomRightRadius: 15,
-    borderBottomLeftRadius: 15
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 5
+
+  },
+  searchItemCategory: {
+    borderBottomWidth: .5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+
+    backgroundColor: colors.green
   },
   advStyle: {
     width: Dimensions.get('window').width * 343 / 375,
     height: Dimensions.get('window').height * 94 / 812,
     resizeMode: 'cover',
     // backgroundColor:'red',
-    borderRadius:17,
+    borderRadius: 17,
   },
+  searchProductStyle: {
+    resizeMode: 'contain',
+    height: 30,
+    width: 30
+
+  },
+  searchCategoryStyle: {
+    resizeMode: 'contain',
+    height: 40,
+    width: 40
+
+  }
 });
 const mapStateToProps = state => ({
   productsReducer: state.productsReducer,

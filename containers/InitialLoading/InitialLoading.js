@@ -4,12 +4,14 @@ import { StyleSheet, Text, View ,Button} from 'react-native';
 import store from '../../store'
 
 
+
 export default class InitialLoading extends React.Component {
 
 componentDidMount(){
   
   console.log('InitialLoading');
   
+
 }
 
 

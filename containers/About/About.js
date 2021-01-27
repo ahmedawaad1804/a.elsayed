@@ -48,7 +48,6 @@ export default class About extends React.Component {
       if(res.data.result[0]){
       this.setState({ data: res.data.result[0] })}
     }).catch(err => {
-      console.log(err.response.data);
     })
   }
 

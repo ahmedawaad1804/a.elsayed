@@ -24,7 +24,7 @@ import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import adressService from '../../services/adressService'
 import dataService from '../../services/dataService';
-class AddAdress extends React.Component {
+class AddAdressProceed extends React.Component {
     state = {
         visible: false,
         country: "Egypt",
@@ -34,11 +34,9 @@ class AddAdress extends React.Component {
         route: '',
         street: '',
         appartement: '',
-        lat: null,
-        long: null,
-        cityList: [{
-            value: 'الاسكندرية',
-        }],
+        lat: 0,
+        long: 0,
+
 
         errorMessage: " ",
         _error: false,
@@ -52,59 +50,24 @@ class AddAdress extends React.Component {
 
     static navigationOptions = { header: null }
     componentDidMount() {
-
+        console.log(this.props.navigation.state.params);
+        this.setState({
+            house: this.props.navigation.state.params.street,
+            street: this.props.navigation.state.params.route,
+            neighbourhood: this.props.navigation.state.params.neighbourhood,
+            administrative_area: this.props.navigation.state.params.administrative_area,
+            city: this.props.navigation.state.params.city,
+            // notes:this.props.navigation.state.params.country,
+            lat: this.props.navigation.state.params.latitude,
+            long: this.props.navigation.state.params.longitude
+        })
 
 
     }
 
 
     getLocationAsync = async () => {
-        this.setState({ visible: true })
-        setTimeout(() => {
-            this.setState({ visible: false })
-        }, 6000);
-        let status = await Permissions.askAsync(Permissions.LOCATION)
-        // let status = await Location.getPermissionsAsync()
-        let location = await Location.getCurrentPositionAsync({})
-        this.setState({ location })
-        Geocoder.init("AIzaSyD7arViUQWyZhROPL4HKcujDdNy_fi2XW4", { language: "ar" });
-        Geocoder.from(this.state.location.coords.latitude, this.state.location.coords.longitude)
-            .then(json => {
-                let street = json.results[0].address_components[0] ? json.results[0].address_components[0].long_name : " "
-                let route = json.results[0].address_components[1] ? json.results[0].address_components[1].long_name : " "
-                let neighbourhood = json.results[0].address_components[2] ? json.results[0].address_components[2].long_name : " ";
-                let administrative_area = json.results[0].address_components[3] ? json.results[0].address_components[3].long_name : " ";
-                let city = json.results[0].address_components[4] ? json.results[0].address_components[4].long_name : " ";
-                let country = json.results[0].address_components[5] ? json.results[0].address_components[5].long_name : " ";
-                this.props.addAdress({
-                    street,
-                    route,
-                    neighbourhood,
-                    administrative_area,
-                    city,
-                    country,
-                    current: false,
-                    lat: this.state.location.coords.latitude,
-                    long: this.state.location.coords.longitude,
-                },
 
-                    // console.log("any")
-                    setTimeout(() => {
-                        dataService.addAdress(this.props.adressReducer).then().catch(err => console.log(err))
-
-                    }, 500)
-                )
-                // console.log("done");
-                this.props.navigation.goBack()
-                this.setState({ visible: false })
-
-
-            })
-            .catch(error => {
-                console.warn(error)
-                this.props.navigation.goBack()
-                this.setState({ visible: false })
-            });
 
 
     }
@@ -115,18 +78,21 @@ class AddAdress extends React.Component {
     _city(text) { this.setState({ city: text }) }
     _notes(text) { this.setState({ notes: text }) }
     async AddTypedAddress() {
-        if (this.state.floor != '' && this.state.street1 != '' &&this.state.house != '') {
+        if (this.state.neighbourhood != '' && this.state.street != '' && this.state.house != ''
+            && this.state.administrative_area != ''
+            && this.state.city != ''
+        ) {
             this.setState({ visible: true })
             await this.props.addAdress({
                 street: this.state.floor + " " + this.state.house,
                 route: this.state.street,
                 neighbourhood: this.state.neighbourhood,
-                administrative_area: " ",
+                administrative_area: this.state.administrative_area,
                 city: this.state.city,
                 country: this.state.notes,
                 current: false,
-                lat: 31.242209967700244,
-                long: 29.96851761948395,
+                lat: this.state.lat,
+                long: this.state.long,
             },
                 setTimeout(() => {
                     dataService.addAdress(this.props.adressReducer).then().catch(err => console.log(err))
@@ -134,10 +100,11 @@ class AddAdress extends React.Component {
                 }, 500)
             )
 
-            this.props.navigation.goBack()
+            this.props.navigation.navigate("Adress")
+
             this.setState({ visible: false })
         }
-        else{
+        else {
             this.setState({ _error: true })
             this.setState({ errorMessage: I18nManager.isRTL ? "يرجي إضافة عنوان صحيح" : "Enter a valid Adress" })
         }
@@ -203,107 +170,94 @@ class AddAdress extends React.Component {
                         <Spinner visible={this.state.visible} textContent={"Loading..."} textStyle={{ color: colors.white }} />
                     </View>
                     <View style={styles.mainContainer}>
+                            {this.state._error && (<Text style={styles.errorText}>{this.state.errorMessage}</Text>)}
+                            {!this.state._error && (<Padv height={22} />)}
+                            <ScrollView>
 
-                        {this.state._error && (<Text style={styles.errorText}>{this.state.errorMessage}</Text>)}
-                        {!this.state._error && (<Padv height={22} />)}
+                            <Text style={[styles.addressText, { flex: 0 }]}>{I18nManager.isRTL ? "اكتب عنوانك بالتفصيل" : "ُEnter your detailed address"}</Text>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? "رقم المنزل" : "ُHouse no."}</Text>
 
-                        <Text style={[styles.addressText, { flex: 0 }]}>{I18nManager.isRTL ? "اكتب عنوانك بالتفصيل" : "ُEnter your detailed address"}</Text>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "رقم المنزل" : "ُHouse no."}</Text>
+                                <TextInput
+                                    style={styles.textInputStyle}
+                                    placeholder={I18nManager.isRTL ? "رقم المنزل" : "House number"}
+                                    value={this.state.house}
+                                    placeholderTextColor={'#ccc'}
+                                    // width={Dimensions.get('window').width * 343 / 375}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._house(text)}
+                                />
+                            </View>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? " (اختياري) الدور" : "floor (optional)"}</Text>
 
-                            <TextInput
-                                style={styles.textInputStyle}
-                                placeholder={I18nManager.isRTL ? "رقم المنزل" : "House number"}
-                                value={this.state.house}
-                                placeholderTextColor={'#ccc'}
-                                // width={Dimensions.get('window').width * 343 / 375}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._house(text)}
-                            />
-                        </View>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "الدور" : "floor"}</Text>
+                                <TextInput
+                                    style={styles.textInputStyle}
+                                    placeholder={I18nManager.isRTL ? "الدور" : "floor"}
+                                    value={this.state.floor}
+                                    placeholderTextColor={'#ccc'}
+                                    // width={Dimensions.get('window').width * 343 / 375}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._floor(text)}
+                                />
+                            </View>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? "الشارع" : "street"}</Text>
 
-                            <TextInput
-                                style={styles.textInputStyle}
-                                placeholder={I18nManager.isRTL ? "الدور" : "floor"}
-                                value={this.state.floor}
-                                placeholderTextColor={'#ccc'}
-                                // width={Dimensions.get('window').width * 343 / 375}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._floor(text)}
-                            />
-                        </View>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "الشارع" : "street"}</Text>
+                                <TextInput
+                                    style={styles.textInputStyle}
+                                    placeholder={I18nManager.isRTL ? "الشارع" : "street"}
+                                    value={this.state.street}
+                                    placeholderTextColor={'#ccc'}
+                                    // width={Dimensions.get('window').width * 343 / 375}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._street(text)}
+                                />
+                            </View>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? "المنطقة" : "Area"}</Text>
 
-                            <TextInput
-                                style={styles.textInputStyle}
-                                placeholder={I18nManager.isRTL ? "الشارع" : "street"}
-                                value={this.state.street}
-                                placeholderTextColor={'#ccc'}
-                                // width={Dimensions.get('window').width * 343 / 375}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._street(text)}
-                            />
-                        </View>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "المنطقة" : "Area"}</Text>
+                                <TextInput
+                                    style={styles.textInputStyle}
+                                    placeholder={I18nManager.isRTL ? "المنطقة" : "Area"}
+                                    value={this.state.neighbourhood}
+                                    placeholderTextColor={'#ccc'}
+                                    // width={Dimensions.get('window').width * 343 / 375}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._neighbourhood(text)}
+                                />
+                            </View>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? "المدينة" : "City"}</Text>
 
-                            <TextInput
-                                style={styles.textInputStyle}
-                                placeholder={I18nManager.isRTL ? "المنطقة" : "Area"}
-                                value={this.state.neighbourhood}
-                                placeholderTextColor={'#ccc'}
-                                // width={Dimensions.get('window').width * 343 / 375}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._neighbourhood(text)}
-                            />
-                        </View>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "المدينة" : "City"}</Text>
+                                <TextInput
+                                    style={styles.textInputStyle}
+                                    placeholder={I18nManager.isRTL ? "المدينة" : "City"}
+                                    value={this.state.city}
+                                    placeholderTextColor={'#ccc'}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._city(text)}
+                                />
+                            </View>
+                            <View style={styles.textInputView}>
+                                <Text style={styles.addressText}>{I18nManager.isRTL ? " (اختياري) ملاحظات" : "Notes (optional)"}</Text>
 
-                            <TextInput
-                                style={styles.textInputStyle}
-                                placeholder={I18nManager.isRTL ? "المدينة" : "City"}
-                                value={this.state.city}
-                                placeholderTextColor={'#ccc'}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._city(text)}
-                            />
-                        </View>
-                        <View style={styles.textInputView}>
-                            <Text style={styles.addressText}>{I18nManager.isRTL ? "ملاحظات" : "Notes"}</Text>
+                                <TextInput
+                                    style={[styles.textInputStyle, { height: Dimensions.get('window').height * 2 / 10 }]}
+                                    placeholder={I18nManager.isRTL ? "ملاحظات" : "Notes"}
+                                    value={this.state.notes}
+                                    placeholderTextColor={'#ccc'}
+                                    autoCapitalize='none'
+                                    onChangeText={(text) => this._notes(text)}
+                                />
+                            </View>
+                            <TouchableOpacity style={[styles.tOpacity, { flexDirection: 'row' }]} onPress={() => { this.AddTypedAddress() }}>
+                                <Text style={styles.text}>{I18nManager.isRTL ? "اضف العنوان" : "Add address"}</Text>
 
-                            <TextInput
-                                style={[styles.textInputStyle, { height: Dimensions.get('window').height * 2 / 10 }]}
-                                placeholder={I18nManager.isRTL ? "ملاحظات" : "Notes"}
-                                value={this.state.notes}
-                                placeholderTextColor={'#ccc'}
-                                autoCapitalize='none'
-                                onChangeText={(text) => this._notes(text)}
-                            />
-                        </View>
-                        <TouchableOpacity style={[styles.tOpacity, { flexDirection: 'row' }]} onPress={() => { this.AddTypedAddress() }}>
-                            <Text style={styles.text}>{I18nManager.isRTL ? "اضف العنوان" : "Add address"}</Text>
-
-                        </TouchableOpacity>
-                        <Text style={[styles.addressText,{ marginVertical: 20,flex:0 }]}>{I18nManager.isRTL ? "او استخدم عنوانك الهاتف الحالي" : "ُor use current phone location"}</Text>
-
-                        <TouchableOpacity style={[styles.tOpacity, { flexDirection: 'row' }]} onPress={() => { this.getLocationAsync() }}>
-                            <Text style={styles.text}>{I18nManager.isRTL ? "إستخدام الموقع الحالي" : "Use Location"}</Text>
-                            <Image
-                                source={require('../../assets/icons/triger.png')}
-                                style={{
-                                    height: '50%',
-                                    resizeMode: 'contain'
+                            </TouchableOpacity>
 
 
-                                }}
-                            />
-                        </TouchableOpacity>
-
-
+                        </ScrollView>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -518,4 +472,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     addAdress,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(AddAdress)
+export default connect(mapStateToProps, mapDispatchToProps)(AddAdressProceed)

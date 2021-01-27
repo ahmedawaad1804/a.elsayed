@@ -10,7 +10,6 @@ import { Header } from 'react-navigation-stack';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 export default class MainCategoryItem extends React.Component {
     componentDidMount(){
-        // console.log( this.props);
         
     }
     setMenuRef = ref => {
@@ -36,7 +35,7 @@ export default class MainCategoryItem extends React.Component {
     }
     render() {
         return (
-            <View style={styles.flexItem} >
+            <TouchableOpacity style={styles.flexItem} onPress={this.showMenu} >
                 <View style={{ flex: 1.5, alignItems: 'center' }}>
                     <Image source={require("../../assets/icons/marker.png")}
                         style={styles.Icon} />
@@ -73,7 +72,7 @@ export default class MainCategoryItem extends React.Component {
                     </Menu>
 
                 </View>
-            </View>
+            </TouchableOpacity>
 
         );
     }
