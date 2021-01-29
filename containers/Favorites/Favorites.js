@@ -82,7 +82,7 @@ class Favorites extends React.Component {
             this.refreshList()
         }, 10000);
     }
-
+   
 
     _handlePress = (item) => {
         this.setState({ _isPressed: item._id })
@@ -105,9 +105,9 @@ class Favorites extends React.Component {
         // item == 0 ? this.setState({ loop: this.state.orders }) : this.setState({ loop: this.state.ordersHistory })
 
     }
-    refreshList(){
+    refreshList() {
         // console.log(this.state._isPressed);
-        if(this.state._isPressed==-1){
+        if (this.state._isPressed == -1) {
             likeService.getLikes().then(res => {
                 // console.log(res.data.likes);
                 this.setState({ itemData: res.data.likes })
@@ -124,20 +124,20 @@ class Favorites extends React.Component {
                             flag = false
                         }
                     }
-    
+
                     if (!flag) { continue }
                     arr.push(temp[index].mainCategory)
-    
+
                 }
                 arr.unshift({ nameEN: "All", _id: -1, nameAR: 'الكل' })
                 // console.log(arr);
                 //
-    
-                
+
+
                 this.setState({ category: arr })
                 // console.log(category);
                 // this.setState({ refreshing: false })
-    
+
             }).catch(err => {
                 console.log(err);
                 // this.setState({ refreshing: false })
@@ -145,17 +145,27 @@ class Favorites extends React.Component {
         }
 
     }
-   
+
     _handleLogin = () => {
         this.props.navigation.navigate("Login")
     }
     _handleRegister = () => {
         this.props.navigation.navigate("Register")
     }
-    handleCartAddOne() {
+    handleCartAddOne(item) {
+        item.extraArray = []
+
+
+        this.props.setCart({
+            item: item, count: 1,
+        })
+        // Toast.show(`${item.productNameEN} added to cart`);
 
     }
-    handleLike() {
+    
+    handlePress(item) {
+        this.props.navigation.navigate("productInfo", { item: item })
+        // console.log(item);
 
     }
     componentWillUnmount() {
@@ -244,7 +254,7 @@ class Favorites extends React.Component {
                                     renderItem={({ item }) => (
                                         // <Text>sd</Text>
                                         <Product
-                                            // handlePress={() => this.handlePress(item)}
+                                            handlePress={() => this.handlePress(item)}
                                             src={item}
                                             handleLike={(e) => { this.handleLike(e, item) }}
                                             handleCartAddOne={() => this.handleCartAddOne(item)}

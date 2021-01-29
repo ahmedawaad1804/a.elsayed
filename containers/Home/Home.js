@@ -330,7 +330,7 @@ class Home extends React.Component {
             width: Dimensions.get('window').width * 10 * 1.4 / 375,
             height: Dimensions.get('window').height * 18 * 1.4 / 812,
             position: 'absolute',
-            zIndex: 12,
+            zIndex: 0,
             right: 20,
             bottom: -30,
             // backgroundColor:'red',

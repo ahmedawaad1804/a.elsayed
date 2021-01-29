@@ -2,7 +2,7 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { StyleSheet, Text, View, Platform, Animated, Alert, UIManager, I18nManager, Keyboard, Switch, CheckBox, ActivityIndicator, TouchableWithoutFeedback, Button, Input, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, KeyboardAvoidingView, ImageBackground } from 'react-native';
 import store from '../../store'
-import * as AppleAuthentication from 'expo-apple-authentication';
+// import * as AppleAuthentication from 'expo-apple-authentication';
 import { connect } from 'react-redux'
 /* localization */
 import { Restart } from 'fiction-expo-restart';
@@ -243,10 +243,10 @@ class Login extends React.Component {
 
     })
 
-    Animated.timing(this.state.animeHeight, {
-      toValue: Dimensions.get('window').height,
-      duration: 1000
-    }).start();
+    // Animated.timing(this.state.animeHeight, {
+    //   toValue: Dimensions.get('window').height,
+    //   duration: 1000
+    // }).start();
     // store.dispatch(getProducts())
     // this.props.updateLang({asd:"asdsd"})
     this._handleRememberMeGet()
