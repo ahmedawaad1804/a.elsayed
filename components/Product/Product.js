@@ -215,4 +215,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default React.memo (Product)
+export default Product
