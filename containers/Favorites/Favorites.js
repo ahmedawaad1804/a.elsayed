@@ -172,6 +172,9 @@ class Favorites extends React.Component {
 
         this.unsubscribe();
     }
+    handleLike(){
+        
+    }
 
     render() {
         return (
